@@ -1064,24 +1064,24 @@ export default function AuditMyBody() {
         setTimeout(() => {
             const msgs = {
                 LIQUIDATED: [
-                    `grade ${data.grade}. LIQUIDATED 💀 ${data.exploits.length} exploits found.\n\nmy mass adoption strategy is apparently just sitting.\n\nbet you can't score lower 👇`,
-                    `auditmybody.com gave me grade ${data.grade}. LIQUIDATED.\n\ndegen score: ${data.degenScore}%\ngrass debt: ${data.grassDebt}min\n\nhonestly impressed with myself. try to beat this 👇`,
-                    `body audit: LIQUIDATED 💀 grade ${data.grade}\n\n${data.exploits.length} active exploits and 0 regrets.\nwell... maybe some regrets.\n\nwhat's your grade? 👇`,
+                    `grade ${data.grade}. LIQUIDATED 💀 ${data.exploits.length} exploits found.\n\nmy mass adoption strategy is apparently just sitting.\n\nbet you can't score lower`,
+                    `auditmybody.com gave me grade ${data.grade}. LIQUIDATED.\n\ndegen score: ${data.degenScore}%\ngrass debt: ${data.grassDebt}min\n\nhonestly impressed with myself. try to beat this`,
+                    `body audit: LIQUIDATED 💀 grade ${data.grade}\n\n${data.exploits.length} active exploits and 0 regrets.\nwell... maybe some regrets.`,
                 ],
                 CRITICAL: [
-                    `body audit: CRITICAL 🫠 grade ${data.grade}\n\ndegen score ${data.degenScore}%, ${data.grassDebt}min grass debt\n\nat this point i'm speedrunning health issues. what's your score? 👇`,
-                    `auditmybody.com says CRITICAL. grade ${data.grade}.\n\n${data.sleep}h sleep, ${data.caffeine || 3} coffees, ${data.sitting}h sitting.\nthis is fine. everything is fine.\n\npost yours 👇`,
-                    `grade ${data.grade}. protocol state: CRITICAL 🫠\n\nenergy at ${data.energy}%. ${data.exploits.length} exploits running.\ni'll fix it tomorrow (i won't).\n\nhow bad is yours? 👇`,
+                    `body audit: CRITICAL 🫠 grade ${data.grade}\n\ndegen score ${data.degenScore}%, ${data.grassDebt}min grass debt\n\nat this point i'm speedrunning health issues.`,
+                    `auditmybody.com says CRITICAL. grade ${data.grade}.\n\n${data.sleep}h sleep, ${data.caffeine || 3} coffees, ${data.sitting}h sitting.\nthis is fine. everything is fine.`,
+                    `grade ${data.grade}. protocol state: CRITICAL 🫠\n\nenergy at ${data.energy}%. ${data.exploits.length} exploits running.\ni'll fix it tomorrow (i won't).`,
                 ],
                 DEGRADING: [
-                    `body audit: DEGRADING 📉 grade ${data.grade}\n\ngrass debt: ${data.grassDebt}min. sunlight oracle: offline ${data.daysOut}d.\nnot great, not terrible. could be worse.\n\nwhat did you get? 👇`,
-                    `auditmybody.com gave me grade ${data.grade}. DEGRADING.\n\n${data.energy}% energy, degen score ${data.degenScore}%\n\ni'm choosing to see this as room for improvement.\n\nyour turn 👇`,
-                    `grade ${data.grade}. body state: DEGRADING 📉\n\n${data.sitting}h sitting today. proof of walk: questionable.\nthe bar was low and i still tripped.\n\nbeat my score 👇`,
+                    `body audit: DEGRADING 📉 grade ${data.grade}\n\ngrass debt: ${data.grassDebt}min. sunlight oracle: offline ${data.daysOut}d.\nnot great, not terrible. could be worse.`,
+                    `auditmybody.com gave me grade ${data.grade}. DEGRADING.\n\n${data.energy}% energy, degen score ${data.degenScore}%\n\ni'm choosing to see this as room for improvement.`,
+                    `grade ${data.grade}. body state: DEGRADING 📉\n\n${data.sitting}h sitting today. proof of walk: questionable.\nthe bar was low and i still tripped.`,
                 ],
                 OPTIMAL: [
-                    `body audit: OPTIMAL ✅ grade ${data.grade}\n\n0 exploits. proof of walk: VERIFIED.\nyes, we exist. no, i don't know how either.\n\nlet's see yours 👇`,
-                    `grade ${data.grade}. OPTIMAL ✅ ${data.energy}% energy, 0 exploits.\n\ntouch grass, ship code, repeat.\napparently it's that simple.\n\nprove me wrong 👇`,
-                    `auditmybody.com gave me grade ${data.grade}. OPTIMAL.\n\ndegen score: only ${data.degenScore}%.\nfinally something in crypto i didn't get rekt on.\n\nwhat's your grade? 👇`,
+                    `body audit: OPTIMAL ✅ grade ${data.grade}\n\n0 exploits. proof of walk: VERIFIED.\nyes, we exist. no, i don't know how either.`,
+                    `grade ${data.grade}. OPTIMAL ✅ ${data.energy}% energy, 0 exploits.\n\ntouch grass, ship code, repeat.\napparently it's that simple.`,
+                    `auditmybody.com gave me grade ${data.grade}. OPTIMAL.\n\ndegen score: only ${data.degenScore}%.\nfinally something in crypto i didn't get rekt on.`,
                 ],
             };
             const pool = msgs[data.pState] || msgs.DEGRADING;
