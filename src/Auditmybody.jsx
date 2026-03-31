@@ -934,7 +934,7 @@ export default function AuditMyBody() {
                                 <div>
                                     <Stepper label="sleep_hours" value={form.sleep} onChange={v => set("sleep", v)} min={3} max={12} unit="h" status={inputStatus("sleep")} />
                                     <Stepper label="sitting_hours" value={form.sitting} onChange={v => set("sitting", v)} min={0} max={16} unit="h" status={inputStatus("sitting")} />
-                                    <Stepper label="days_no_sunlight" value={form.daysOut} onChange={v => set("daysOut", v)} min={0} max={21} unit="d" status={inputStatus("daysOut")} />
+                                    <Stepper label="days_no_sunlight" value={form.daysOut} onChange={v => set("daysOut", v)} min={0} max={365} unit="d" status={inputStatus("daysOut")} />
                                     <Stepper label="avg_steps" value={form.steps} onChange={v => set("steps", v)} min={0} max={20000} unit="steps" status={inputStatus("steps")} step={500} />
                                 </div>
                                 <div>
