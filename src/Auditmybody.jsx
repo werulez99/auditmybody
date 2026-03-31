@@ -688,7 +688,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge }) {
                             <div style={{ flex: 1 }}>
                                 <div style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.green, marginBottom: 4 }}>{r.action}</div>
                                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                                    {r.effect.map((e, j) => <span key={j} style={{ fontFamily: mono, fontSize: 9 }}><span style={{ color: C.muted }}>{e.k}: </span><span style={{ color: C.green }}>{e.v}</span></span>)}
+                                    {r.effect.map((e, j) => <span key={j} style={{ fontFamily: mono, fontSize: 13 }}><span style={{ color: C.muted }}>{e.k}: </span><span style={{ color: C.green }}>{e.v}</span></span>)}
                                 </div>
                             </div>
                         </div>
