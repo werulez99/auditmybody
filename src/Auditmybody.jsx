@@ -310,15 +310,16 @@ function Bar({ value, col, h, bg }) {
 function Ring({ value, col, size, stroke }) {
     const sz = size || 80, sw = stroke || 8;
     const r = (sz - sw) / 2, circ = 2 * Math.PI * r;
+    const safe = Math.max(0, Math.min(100, value || 0));
     const [dash, setDash] = useState(circ);
     const t = useRef(null);
-    useEffect(() => { t.current = setTimeout(() => setDash(circ - (value / 100) * circ), 80); return () => clearTimeout(t.current); }, [value, circ]);
+    useEffect(() => { t.current = setTimeout(() => setDash(circ - (safe / 100) * circ), 80); return () => clearTimeout(t.current); }, [safe, circ]);
     return (
-        <svg width={sz} height={sz} style={{ transform: "rotate(-90deg)" }}>
-            <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke="rgba(99,179,237,0.08)" strokeWidth={sw} />
-            <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke={col} strokeWidth={sw}
+        <svg width={sz} height={sz} style={{ transform: "rotate(-90deg)", display: "block" }}>
+            <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke="rgba(99,179,237,0.06)" strokeWidth={sw} />
+            {safe > 0 && <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke={col} strokeWidth={sw}
                 strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={dash}
-                style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.34,1.56,.64,1)", filter: `drop-shadow(0 0 6px ${col}aa)` }} />
+                style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.34,1.56,.64,1)", filter: `drop-shadow(0 0 8px ${col}66)` }} />}
         </svg>
     );
 }
@@ -1772,11 +1773,19 @@ export default function AuditMyBody() {
 
                         {/* Fun stats */}
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginTop: 12 }}>
-                            {[
-                                { emoji: "🌿", label: "Most Common Grade", val: "D", sub: "avg degen, probably" },
-                                { emoji: "☀️", label: "Sunlight Oracle", val: "OFFLINE", sub: "you know who you are" },
-                                { emoji: "💀", label: "Liquidated Protocols", val: "many", sub: "this is a free tool" },
-                            ].map((s, i) => (
+                            {(() => {
+                                const avgGrade = history.length > 0
+                                    ? getGrade(Math.round(history.reduce((sum, h) => sum + h.overallScore, 0) / history.length))
+                                    : null;
+                                const avgScore = history.length > 0
+                                    ? Math.round(history.reduce((sum, h) => sum + h.overallScore, 0) / history.length)
+                                    : null;
+                                return [
+                                    { emoji: "🌿", label: "Your Avg Grade", val: avgGrade || "?", sub: avgGrade ? `${avgScore}pts avg · ${history.length} audit${history.length !== 1 ? "s" : ""}` : "no audits yet" },
+                                    { emoji: "☀️", label: "Sunlight Oracle", val: "OFFLINE", sub: "you know who you are" },
+                                    { emoji: "💀", label: "Liquidated Protocols", val: "many", sub: "this is a free tool" },
+                                ];
+                            })().map((s, i) => (
                                 <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "14px 16px", textAlign: "center" }}>
                                     <div style={{ fontSize: 20, marginBottom: 6 }}>{s.emoji}</div>
                                     <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 3 }}>{s.label}</div>
