@@ -286,10 +286,10 @@ function Stepper({ label, value, onChange, min, max, step, unit, status }) {
                         color: C.text, cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: mono
                     }}>−</button>
                 <div style={{
-                    width: 68, textAlign: "center", background: "rgba(99,179,237,0.05)", border: `1px solid ${statusCol}44`,
-                    borderRadius: 6, padding: "4px 8px", fontFamily: mono, fontSize: 15, fontWeight: 700, color: statusCol
+                    minWidth: 90, textAlign: "center", background: "rgba(99,179,237,0.05)", border: `1px solid ${statusCol}44`,
+                    borderRadius: 6, padding: "4px 8px", fontFamily: mono, fontSize: 15, fontWeight: 700, color: statusCol, whiteSpace: "nowrap"
                 }}>
-                    {value}<span style={{ fontSize: 15, fontWeight: 400, color: C.muted, marginLeft: 2 }}>{unit}</span>
+                    {value}<span style={{ fontSize: 11, fontWeight: 400, color: C.muted, marginLeft: 3 }}>{unit}</span>
                 </div>
                 <button onClick={() => onChange(Math.min(max, value + s))}
                     style={{
