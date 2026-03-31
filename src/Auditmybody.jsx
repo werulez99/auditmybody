@@ -48,6 +48,11 @@ const SCAN = [
     { t: "> Sedentary Drain .......... scanning", c: C.text },
     { t: "> Sunlight Oracle .......... scanning", c: C.text },
     { t: "> Sleep Debt accumulation .. scanning", c: C.text },
+    { t: "> Hydration Oracle ......... scanning", c: C.text },
+    { t: "> Caloric Intake ........... scanning", c: C.text },
+    { t: "> Posture Validator ........ scanning", c: C.text },
+    { t: "> Caffeine Gas Meter ....... scanning", c: C.text },
+    { t: "> Stretch Protocol ......... scanning", c: C.text },
     { t: "> ─── COMPUTING METRICS ────────────────", c: C.dim },
     { t: "> Touch Grass Debt.......... computing", c: C.text },
     { t: "> Degeneracy Score.......... computing", c: C.text },
@@ -60,13 +65,14 @@ function compute(f) {
     const sl = +f.sleep, si = +f.sitting, dO = +f.daysOut, st = +f.steps;
     const gy = +f.gym, sc = +f.screen, br = +f.breaks, oc = +f.onChain;
     const so = +f.social, sk = +f.sleepCon;
+    const wa = +f.water, ml = +f.meals, po = +f.posture, caf = +f.caffeine, str = +f.stretch;
 
-    const energy = Math.round(cl(sl * 9.5 + st / 145 + gy * 8 - Math.max(0, si - 6) * 7 + br * 4 - Math.max(0, dO - 1) * 5, 0, 100));
+    const energy = Math.round(cl(sl * 9.5 + st / 145 + gy * 8 - Math.max(0, si - 6) * 7 + br * 4 - Math.max(0, dO - 1) * 5 + Math.min(wa, 8) * 2 + Math.min(ml, 3) * 4, 0, 100));
     const liqRisk = Math.round(cl(Math.max(0, si - 6) * 7 + dO * 12 + Math.max(0, 6 - sl) * 14 + Math.max(0, oc - 10) * 3 + (so === 0 ? 10 : 0), 0, 97));
     const burnout = Math.round(cl(Math.max(0, si - 6) * 5.5 + dO * 4 + Math.max(0, 6 - sl) * 10 + (3 - so) * 8 + Math.max(0, oc - 8) * 4, 0, 97));
-    const revert = Math.round(cl(Math.max(0, 6 - sl) * 12 + Math.max(0, si - 6) * 6 + (4 - br) * 5 + dO * 2.5, 0, 97));
+    const revert = Math.round(cl(Math.max(0, 6 - sl) * 12 + Math.max(0, si - 6) * 6 + (4 - br) * 5 + dO * 2.5 + (3 - po) * 4 + (3 - str) * 3, 0, 97));
     const cogAlpha = Math.round(cl(sl / 8 * 36 + st / 10000 * 22 + br / 4 * 20 + (Math.max(0, 3 - dO) / 3) * 14 + gy / 4 * 8, 0, 100));
-    const cortisol = Math.round(cl(Math.max(0, 6 - sl) * 10 + Math.max(0, si - 5) * 4 + dO * 5.5 + Math.max(0, sc - 6) * 3 + (4 - br) * 3 + (3 - so) * 3, 0, 100));
+    const cortisol = Math.round(cl(Math.max(0, 6 - sl) * 10 + Math.max(0, si - 5) * 4 + dO * 5.5 + Math.max(0, sc - 6) * 3 + (4 - br) * 3 + (3 - so) * 3 + Math.max(0, caf - 3) * 5, 0, 100));
     const execQ = Math.round(cl(cogAlpha * 0.6 + (100 - cortisol) * 0.4, 0, 100));
     const latency = Math.max(50, Math.round(600 - sl * 50 - st / 250));
     const uptime = Math.round(cl(65 + sk * 11, 0, 99));
@@ -98,6 +104,7 @@ function compute(f) {
         { id: "INV-003", desc: "Sunlight Oracle", label: "sunlight daily", ok: dO === 0, actual: dO === 0 ? "today" : `${dO}d ago`, expected: "daily" },
         { id: "INV-004", desc: "Proof of Walk", label: "steps ≥ 5000", ok: st >= 5000, actual: st.toLocaleString(), expected: "≥5000" },
         { id: "INV-005", desc: "IRL Interaction", label: "social layer", ok: so >= 1, actual: ["offline", "low", "mod", "good"][so], expected: "≥low" },
+        { id: "INV-006", desc: "Hydration Oracle", label: "water >= 8 glasses", ok: wa >= 8, actual: `${wa} glasses`, expected: "≥8" },
     ];
     const brokenInvs = invariants.filter(i => !i.ok).length;
 
@@ -108,6 +115,9 @@ function compute(f) {
         sl < 6 && { id: "EXP-004", name: "Sleep Debt Accumulation", sev: "CRITICAL", dur: `${sl}h/night`, impact: "3x compounding deficit. Cognitive performance collapsing.", note: "Sleep is not optional. It is not yield." },
         so === 0 && { id: "EXP-005", name: "Social Layer: Offline", sev: "HIGH", dur: "Active", impact: "+26% all-cause mortality risk. IRL frens: 0.", note: "Twitter replies do not count as socializing." },
         oc > 12 && { id: "EXP-006", name: "Work Position Overleveraged", sev: "MEDIUM", dur: `${oc}h today`, impact: "Executive function depleting. Decision quality: LOW.", note: "No meaningful grass interaction detected." },
+        wa < 4 && { id: "EXP-007", name: "Dehydration Exploit", sev: wa < 2 ? "HIGH" : "MEDIUM", dur: `${wa} glasses/day`, impact: "Cognitive performance dropping. Brain is 75% water, not 75% coffee.", note: "Coffee does not count as hydration." },
+        ml <= 1 && { id: "EXP-008", name: "Caloric Underflow Attack", sev: "HIGH", dur: `${ml} meals/day`, impact: "Energy reserves critically low. Metabolic rate entering survival mode.", note: "Skipping meals is not intermittent fasting. It's just skipping meals." },
+        caf > 5 && { id: "EXP-009", name: "Stimulant Gas Overflow", sev: "MEDIUM", dur: `${caf} cups/day`, impact: "Cortisol spiking. Anxiety module activated. Heart rate: elevated.", note: "More coffee is not more productivity. It's more jitter." },
     ].filter(Boolean);
 
     const findings = [];
@@ -124,6 +134,14 @@ function compute(f) {
     if (so === 0) push("HIGH", "SOC-001", "Social layer offline. +26% elevated all-cause mortality risk.", "Holt-Lunstad 2015");
     if (burnout >= 70) push("HIGH", "BRN-001", `Burnout at ${burnout}%. You are rugging yourself.`, "Maslach Burnout Inventory");
     if (leverage > 4) push("HIGH", "LEV-001", `Leverage ${leverage}x. Work/recovery ratio unsustainable.`, "Overtraining syndrome");
+    if (wa < 3) push("HIGH", "HYD-001", `${wa} glasses of water. Brain running on coffee fumes.`, "EFSA Dietary Reference 2010");
+    else if (wa < 6) push("MEDIUM", "HYD-002", `${wa} glasses. Below minimum hydration threshold.`, "Mayo Clinic Hydration");
+    if (ml === 0) push("CRITICAL", "MEL-001", "Zero meals today. This is not intermittent fasting, this is starvation.", "NIH Dietary Guidelines 2020");
+    else if (ml === 1) push("HIGH", "MEL-002", `${ml} meal/day. Caloric underflow detected.`, "ADA Nutrition Guidelines");
+    if (po === 0) push("MEDIUM", "POS-001", "Posture: terrible. Spinal integrity check: FAILED. Your back has filed a bug report.", "Hansraj 2014 · Spine Journal");
+    if (caf > 6) push("HIGH", "CAF-001", `${caf} cups of caffeine. Gas fees exceeding safe limit. Heart rate: ?`, "FDA Caffeine Safety 2018");
+    else if (caf > 4) push("MEDIUM", "CAF-002", `${caf} cups. Stimulant dependency detected.`, "EFSA Caffeine Opinion 2015");
+    if (str === 0) push("LOW", "STR-001", "Stretch protocol: NOT DEPLOYED. Flexibility contract expired.", "ACSM Guidelines 2021");
 
     const recoveryTx = [
         { action: "touch_grass(30min)", emoji: "🌿", effect: [{ k: "liq_risk", v: `-${Math.round(liqRisk * 0.15)}%` }, { k: "energy", v: `+${Math.round(energy * 0.15 + 5)}%` }], active: liqRisk > 30 || dO > 0 },
@@ -132,6 +150,8 @@ function compute(f) {
         { action: "gym(45min)", emoji: "🏋️", effect: [{ k: "burnout", v: `-${Math.round(burnout * 0.12)}%` }, { k: "energy", v: "+22%" }], active: gy < 2 },
         { action: "close_twitter(now)", emoji: "📵", effect: [{ k: "cope_index", v: "-35%" }, { k: "doomscroll", v: "CLEARED" }], active: sc > 8 || oc > 10 },
         { action: "irl_interaction(30m)", emoji: "🤝", effect: [{ k: "social_layer", v: "ONLINE" }, { k: "INV-005", v: "FIXED" }], active: so === 0 },
+        { action: "drink_water(2L)", emoji: "💧", effect: [{ k: "hydration_oracle", v: "ONLINE" }, { k: "cognition", v: "+15%" }], active: wa < 8 },
+        { action: "stretch(10min)", emoji: "🧘", effect: [{ k: "flexibility", v: "DEPLOYED" }, { k: "revert_risk", v: "-12%" }], active: str < 2 },
     ].filter(r => r.active);
 
     const txHistory = [
@@ -156,7 +176,7 @@ function compute(f) {
         energy, liqRisk, burnout, revert, cogAlpha, cortisol, execQ, latency,
         uptime, missedB, pState, stateIdx, leverage, entropy, yearRisk,
         offChain, onChain: oc, sleep: sl, sitting: si, daysOut: dO, steps: st,
-        social: so, sleepCon: sk, breaks: br,
+        social: so, sleepCon: sk, breaks: br, water: wa, meals: ml, posture: po, caffeine: caf, stretch: str,
         mental, grassDebt, grassReserves, copeIndex, doomscroll, degenScore,
         overallScore, grade, pow, sunOracle, socialLayer, onChainRatio,
         invariants, brokenInvs, exploits, findings, recoveryTx, txHistory, sims, diag,
@@ -424,7 +444,7 @@ function ShareCard({ d, onCopy, copied }) {
 }
 
 /* ─── RESULTS ─────────────────────────────────────────────────── */
-function Results({ d, onReset, onShare, copied }) {
+function Results({ d, onReset, onShare, copied, onGenerateBadge }) {
     const [advOpen, setAdvOpen] = useState(false);
     const [simIdx, setSimIdx] = useState(null);
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
@@ -456,6 +476,7 @@ function Results({ d, onReset, onShare, copied }) {
                     ))}
                     <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
                         <button onClick={onShare} style={{ background: copied ? "rgba(74,222,128,0.1)" : "transparent", border: `1px solid ${copied ? C.green + "66" : C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px" }}>{copied ? "✓ COPIED" : "SHARE"}</button>
+                        <button onClick={onGenerateBadge} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>GENERATE BADGE</button>
                         <button onClick={onReset} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>RE-AUDIT</button>
                     </div>
                 </div>
@@ -570,7 +591,7 @@ function Results({ d, onReset, onShare, copied }) {
             <div style={{ background: C.card, border: `1px solid ${d.brokenInvs > 2 ? C.red + "44" : d.brokenInvs > 0 ? C.amber + "44" : C.border}`, borderRadius: 12, padding: "20px", marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                     <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>System Invariants</span>
-                    <span style={{ fontFamily: mono, fontSize: 14, color: d.brokenInvs > 0 ? C.red : C.green }}>{d.brokenInvs}/5 VIOLATED</span>
+                    <span style={{ fontFamily: mono, fontSize: 14, color: d.brokenInvs > 0 ? C.red : C.green }}>{d.brokenInvs}/6 VIOLATED</span>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     {d.invariants.map((inv, i) => (
@@ -778,7 +799,8 @@ function Results({ d, onReset, onShare, copied }) {
 /* ─── ROOT ────────────────────────────────────────────────────── */
 export default function AuditMyBody() {
     const [view, setView] = useState("input");
-    const [form, setForm] = useState({ sleep: 6, sitting: 9, daysOut: 3, steps: 3500, gym: 1, screen: 10, breaks: 1, onChain: 10, social: 1, sleepCon: 1 });
+    const [form, setForm] = useState({ sleep: 6, sitting: 9, daysOut: 3, steps: 3500, gym: 1, screen: 10, breaks: 1, onChain: 10, social: 1, sleepCon: 1, water: 4, meals: 2, posture: 1, caffeine: 3, stretch: 0 });
+    const badgeCanvasRef = useRef(null);
     const [data, setData] = useState(null);
     const [lines, setLines] = useState([]);
     const [copied, setCopied] = useState(false);
@@ -809,7 +831,7 @@ export default function AuditMyBody() {
                     { t: `> Protocol grade: ${data.grade} · State: ${data.pState}`, c: data.pState === "OPTIMAL" ? C.green : data.pState === "DEGRADING" ? C.amber : C.red },
                     { t: `> Touch Grass Debt: ${data.grassDebt}min · Liq Risk: ${data.liqRisk}%`, c: C.amber },
                     { t: `> Proof of Walk: ${data.pow}`, c: data.pow === "VERIFIED" ? C.green : C.red },
-                    { t: `> Invariants broken: ${data.brokenInvs}/5 · Exploits: ${data.exploits.length}`, c: data.brokenInvs > 2 ? C.red : C.amber },
+                    { t: `> Invariants broken: ${data.brokenInvs}/6 · Exploits: ${data.exploits.length}`, c: data.brokenInvs > 2 ? C.red : C.amber },
                     { t: "> Rendering dashboard...", c: C.blue },
                 ];
                 setLines(prev => [...prev, ...summary]);
@@ -849,6 +871,121 @@ export default function AuditMyBody() {
         setTimeout(() => setCopied(false), 2500);
     }
 
+    function generateBadge() {
+        if (!data) return;
+        const w = 600, h = 400;
+        const canvas = badgeCanvasRef.current || document.createElement("canvas");
+        badgeCanvasRef.current = canvas;
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+
+        // Background
+        ctx.fillStyle = "#070f1c";
+        ctx.fillRect(0, 0, w, h);
+
+        // Top accent line
+        const grad = ctx.createLinearGradient(0, 0, w, 0);
+        const pCol = data.pState === "OPTIMAL" ? "#4ade80" : data.pState === "DEGRADING" ? "#fcd34d" : data.pState === "CRITICAL" ? "#f87171" : "#e879f9";
+        grad.addColorStop(0, pCol);
+        grad.addColorStop(0.6, pCol + "88");
+        grad.addColorStop(1, "transparent");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, 3);
+
+        // Title
+        ctx.font = "bold 14px 'Courier New', monospace";
+        ctx.fillStyle = "#4ade80";
+        ctx.textAlign = "left";
+        ctx.fillText("AUDIT MY BODY", 30, 36);
+
+        // Subtitle
+        ctx.font = "12px 'Courier New', monospace";
+        ctx.fillStyle = "#4a7a9b";
+        ctx.fillText("Human Protocol Monitor v2.1", 200, 36);
+
+        // Grade letter (large)
+        const gradeCol = GRADE_COL[data.grade] || "#f87171";
+        ctx.font = "bold 120px system-ui, sans-serif";
+        ctx.fillStyle = gradeCol;
+        ctx.textAlign = "center";
+        ctx.fillText(data.grade, 120, 195);
+
+        // Score below grade
+        ctx.font = "bold 18px 'Courier New', monospace";
+        ctx.fillStyle = "#8ec8e8";
+        ctx.fillText(data.overallScore + " pts", 120, 225);
+
+        // Protocol state
+        ctx.font = "bold 22px system-ui, sans-serif";
+        ctx.fillStyle = pCol;
+        ctx.textAlign = "left";
+        ctx.fillText(data.pState, 250, 80);
+
+        // Metrics
+        const metrics = [
+            { l: "Energy", v: data.energy + "%", c: data.energy >= 70 ? "#4ade80" : data.energy >= 45 ? "#fcd34d" : "#f87171" },
+            { l: "Liq Risk", v: data.liqRisk + "%", c: data.liqRisk <= 30 ? "#4ade80" : data.liqRisk <= 55 ? "#fcd34d" : "#f87171" },
+            { l: "Touch Grass Debt", v: data.grassDebt + " min", c: data.grassDebt <= 60 ? "#4ade80" : data.grassDebt <= 180 ? "#fcd34d" : "#f87171" },
+            { l: "Proof of Walk", v: data.pow.replace(/_/g, " "), c: data.pow === "VERIFIED" ? "#4ade80" : data.pow === "WEAK_PROOF" ? "#fcd34d" : "#f87171" },
+        ];
+
+        let my = 120;
+        metrics.forEach(m => {
+            ctx.font = "12px 'Courier New', monospace";
+            ctx.fillStyle = "#4a7a9b";
+            ctx.textAlign = "left";
+            ctx.fillText(m.l, 250, my);
+            ctx.font = "bold 16px 'Courier New', monospace";
+            ctx.fillStyle = m.c;
+            ctx.fillText(m.v, 420, my);
+            my += 34;
+        });
+
+        // Separator
+        ctx.strokeStyle = "rgba(99,179,237,0.15)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(30, 280);
+        ctx.lineTo(w - 30, 280);
+        ctx.stroke();
+
+        // Invariants / Exploits / Findings row
+        const stats = [
+            { l: "Invariants", v: data.brokenInvs + "/6 broken" },
+            { l: "Exploits", v: data.exploits.length + " active" },
+            { l: "Findings", v: data.findings.length + " total" },
+        ];
+        stats.forEach((s, i) => {
+            const sx = 30 + i * 190;
+            ctx.font = "12px 'Courier New', monospace";
+            ctx.fillStyle = "#4a7a9b";
+            ctx.textAlign = "left";
+            ctx.fillText(s.l, sx, 310);
+            ctx.font = "bold 14px 'Courier New', monospace";
+            ctx.fillStyle = "#8ec8e8";
+            ctx.fillText(s.v, sx, 330);
+        });
+
+        // Footer
+        ctx.font = "12px 'Courier New', monospace";
+        ctx.fillStyle = "#1e3a5f";
+        ctx.textAlign = "center";
+        ctx.fillText("auditmybody.com \u00B7 @Merulez99", w / 2, h - 20);
+
+        canvas.toBlob(blob => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "audit-badge.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, "image/png");
+    }
+
     function fb(text) {
         try {
             const el = document.createElement("textarea"); el.value = text;
@@ -868,6 +1005,9 @@ export default function AuditMyBody() {
         if (k === "screen") return v <= 6 ? "good" : v <= 9 ? "warn" : "bad";
         if (k === "onChain") return v <= 8 ? "good" : v <= 12 ? "warn" : "bad";
         if (k === "gym") return v >= 2 ? "good" : v >= 1 ? "warn" : "bad";
+        if (k === "water") return v >= 8 ? "good" : v >= 5 ? "warn" : "bad";
+        if (k === "meals") return v >= 3 ? "good" : v >= 2 ? "warn" : "bad";
+        if (k === "caffeine") return v <= 2 ? "good" : v <= 4 ? "warn" : "bad";
         return "neutral";
     };
 
@@ -936,11 +1076,14 @@ export default function AuditMyBody() {
                                     <Stepper label="sitting_hours" value={form.sitting} onChange={v => set("sitting", v)} min={0} max={16} unit="h" status={inputStatus("sitting")} />
                                     <Stepper label="days_no_sunlight" value={form.daysOut} onChange={v => set("daysOut", v)} min={0} max={7} unit="d" status={inputStatus("daysOut")} />
                                     <Stepper label="avg_steps" value={form.steps} onChange={v => set("steps", v)} min={0} max={20000} unit="steps" status={inputStatus("steps")} step={500} />
+                                    <Stepper label="water_glasses" value={form.water} onChange={v => set("water", v)} min={0} max={15} unit="gl" step={1} status={inputStatus("water")} />
+                                    <Stepper label="meals_per_day" value={form.meals} onChange={v => set("meals", v)} min={0} max={6} unit="x" step={1} status={inputStatus("meals")} />
                                 </div>
                                 <div>
                                     <Stepper label="screen_time" value={form.screen} onChange={v => set("screen", v)} min={0} max={18} unit="h" status={inputStatus("screen")} />
                                     <Stepper label="on_chain_hours" value={form.onChain} onChange={v => set("onChain", v)} min={0} max={18} unit="h" status={inputStatus("onChain")} />
                                     <Stepper label="gym_sessions_wk" value={form.gym} onChange={v => set("gym", v)} min={0} max={7} unit="x" status={inputStatus("gym")} />
+                                    <Stepper label="caffeine_intake" value={form.caffeine} onChange={v => set("caffeine", v)} min={0} max={10} unit="cups" step={1} status={inputStatus("caffeine")} />
                                     <div style={{ padding: "11px 0", borderBottom: `1px solid ${C.border}` }}>
                                         <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, marginBottom: 6 }}>break_frequency</div>
                                         <div style={{ display: "flex", gap: 5 }}>
@@ -960,6 +1103,8 @@ export default function AuditMyBody() {
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 28px", marginTop: 4 }}>
                                 <Chips label="sleep_schedule" value={form.sleepCon} onChange={v => set("sleepCon", v)} options={["chaotic", "inconsistent", "mostly_ok", "consistent"]} />
                                 <Chips label="social_layer" value={form.social} onChange={v => set("social", v)} options={["offline", "low", "moderate", "active"]} />
+                                <Chips label="posture_quality" value={form.posture} onChange={v => set("posture", v)} options={["terrible", "poor", "decent", "good"]} />
+                                <Chips label="stretch_protocol" value={form.stretch} onChange={v => set("stretch", v)} options={["never", "rarely", "sometimes", "daily"]} />
                             </div>
 
                             <button onClick={runAudit} style={{
@@ -1023,7 +1168,7 @@ export default function AuditMyBody() {
 
                 {/* ── RESULTS ── */}
                 {view === "results" && data && (
-                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShare={share} copied={copied} />
+                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShare={share} copied={copied} onGenerateBadge={generateBadge} />
                 )}
             </div>
         </div>
