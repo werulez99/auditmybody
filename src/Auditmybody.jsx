@@ -386,7 +386,7 @@ function ShareCard({ d, onGenerateBadge, onShareX }) {
                             borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
                             color: C.text, cursor: "pointer", letterSpacing: "1px",
                             textTransform: "uppercase", transition: "all .2s"
-                        }}>𝕏 SHARE ON X</button>
+                        }}>𝕏 Share</button>
                     </div>
                 </div>
 
@@ -484,7 +484,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge }) {
                         </div>
                     ))}
                     <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
-                        <button onClick={onShareX} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.text, cursor: "pointer", letterSpacing: "1px" }}>𝕏 SHARE</button>
+                        <button onClick={onShareX} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.text, cursor: "pointer", letterSpacing: "1px" }}>𝕏 Share</button>
                         <button onClick={onGenerateBadge} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>🎨 BADGE</button>
                         <button onClick={onReset} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>RE-AUDIT</button>
                     </div>
@@ -876,7 +876,7 @@ export default function AuditMyBody() {
             };
             const lines = funnyLines[data.pState] || funnyLines.DEGRADING;
             const msg = lines[Math.floor(Math.random() * lines.length)];
-            const text = msg + "\n\n📎 Badge attached below 👇\nAudit yours at https://auditmybody.com";
+            const text = msg + "\n\nAudit yours 👇\nhttps://auditmybody.com";
             window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
         }, 500);
     }
