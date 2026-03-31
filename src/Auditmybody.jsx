@@ -323,10 +323,10 @@ function Ring({ value, col, size, stroke }) {
     useEffect(() => { t.current = setTimeout(() => setDash(circ - (safe / 100) * circ), 80); return () => clearTimeout(t.current); }, [safe, circ]);
     return (
         <svg width={sz} height={sz} style={{ transform: "rotate(-90deg)", display: "block" }}>
-            <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke="rgba(99,179,237,0.06)" strokeWidth={sw} />
+            <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke="rgba(99,179,237,0.06)" strokeWidth={sw} strokeLinecap="round" />
             {safe > 0 && <circle cx={sz / 2} cy={sz / 2} r={r} fill="none" stroke={col} strokeWidth={sw}
                 strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={dash}
-                style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.34,1.56,.64,1)", filter: `drop-shadow(0 0 8px ${col}66)` }} />}
+                style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.34,1.56,.64,1)" }} />}
         </svg>
     );
 }
