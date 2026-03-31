@@ -214,7 +214,7 @@ const CSS = `
 function Tag({ children, col, bg }) {
     return (
         <span style={{
-            fontFamily: mono, fontSize: 9, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase",
+            fontFamily: mono, fontSize: 14, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase",
             color: col || "#000", background: bg || C.green, padding: "2px 7px", borderRadius: 3
         }}>
             {children}
@@ -276,7 +276,7 @@ function Stepper({ label, value, onChange, min, max, step, unit, status }) {
     return (
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 0", borderBottom: `1px solid ${C.border}` }}>
             <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: mono, fontSize: 10, color: C.muted, letterSpacing: "0.5px", marginBottom: 2 }}>{label}</div>
+                <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, letterSpacing: "0.5px", marginBottom: 2 }}>{label}</div>
                 <Bar value={((value - min) / (max - min)) * 100} col={statusCol} h={3} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -287,9 +287,9 @@ function Stepper({ label, value, onChange, min, max, step, unit, status }) {
                     }}>−</button>
                 <div style={{
                     width: 68, textAlign: "center", background: "rgba(99,179,237,0.05)", border: `1px solid ${statusCol}44`,
-                    borderRadius: 6, padding: "4px 8px", fontFamily: mono, fontSize: 13, fontWeight: 700, color: statusCol
+                    borderRadius: 6, padding: "4px 8px", fontFamily: mono, fontSize: 15, fontWeight: 700, color: statusCol
                 }}>
-                    {value}<span style={{ fontSize: 10, fontWeight: 400, color: C.muted, marginLeft: 2 }}>{unit}</span>
+                    {value}<span style={{ fontSize: 15, fontWeight: 400, color: C.muted, marginLeft: 2 }}>{unit}</span>
                 </div>
                 <button onClick={() => onChange(Math.min(max, value + s))}
                     style={{
@@ -304,11 +304,11 @@ function Stepper({ label, value, onChange, min, max, step, unit, status }) {
 function Chips({ label, value, onChange, options }) {
     return (
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 0", borderBottom: `1px solid ${C.border}`, flexWrap: "wrap" }}>
-            <div style={{ fontFamily: mono, fontSize: 10, color: C.muted, minWidth: 130, letterSpacing: "0.5px" }}>{label}</div>
+            <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, minWidth: 130, letterSpacing: "0.5px" }}>{label}</div>
             <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                 {options.map((o, i) => (
                     <button key={i} onClick={() => onChange(i)} style={{
-                        padding: "4px 10px", borderRadius: 5, fontFamily: mono, fontSize: 9, cursor: "pointer", letterSpacing: "0.5px",
+                        padding: "4px 10px", borderRadius: 5, fontFamily: mono, fontSize: 14, cursor: "pointer", letterSpacing: "0.5px",
                         border: `1px solid ${value === i ? C.blue + "99" : C.border}`,
                         background: value === i ? "rgba(96,165,250,0.15)" : "transparent",
                         color: value === i ? C.blue : C.muted, transition: "all .15s"
@@ -342,20 +342,20 @@ function ShareCard({ d, onCopy, copied }) {
                 {/* Header row */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
                     <div>
-                        <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 6 }}>
+                        <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 6 }}>
                             🔬 AUDIT MY BODY — HUMAN PROTOCOL MONITOR v2.1
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                             <span style={{ fontFamily: sans, fontSize: 22, fontWeight: 900, color: pCol, letterSpacing: "-0.5px" }}>{d.pState}</span>
                             <div style={{ padding: "3px 10px", background: `${pCol}22`, border: `1px solid ${pCol}55`, borderRadius: 5 }}>
-                                <span style={{ fontFamily: mono, fontSize: 10, color: pCol, fontWeight: 700 }}>Grade: {d.grade}</span>
+                                <span style={{ fontFamily: mono, fontSize: 15, color: pCol, fontWeight: 700 }}>Grade: {d.grade}</span>
                             </div>
                         </div>
                     </div>
                     <button onClick={onCopy} style={{
                         background: copied ? "rgba(74,222,128,0.15)" : "rgba(99,179,237,0.08)",
                         border: `1px solid ${copied ? C.green + "66" : C.border}`,
-                        borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 10,
+                        borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
                         color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px",
                         textTransform: "uppercase", transition: "all .2s"
                     }}>{copied ? "✓ COPIED" : "📋 COPY"}</button>
@@ -367,7 +367,7 @@ function ShareCard({ d, onCopy, copied }) {
                         <Ring value={d.overallScore} col={gradeCol} size={90} stroke={9} />
                         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                             <span style={{ fontFamily: sans, fontSize: 28, fontWeight: 900, color: gradeCol, lineHeight: 1 }}>{d.grade}</span>
-                            <span style={{ fontFamily: mono, fontSize: 8, color: C.muted, marginTop: 2 }}>{d.overallScore}pts</span>
+                            <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, marginTop: 2 }}>{d.overallScore}pts</span>
                         </div>
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
@@ -380,8 +380,8 @@ function ShareCard({ d, onCopy, copied }) {
                             { l: "Degen Score", v: `${d.degenScore}%`, c: tc(d.degenScore, true) },
                         ].map((m, i) => (
                             <div key={i} style={{ background: "rgba(99,179,237,0.05)", borderRadius: 8, padding: "8px 10px", border: `1px solid ${C.border}` }}>
-                                <div style={{ fontFamily: mono, fontSize: 8, color: C.muted, marginBottom: 3, letterSpacing: "0.5px" }}>{m.l}</div>
-                                <div style={{ fontFamily: mono, fontSize: 13, fontWeight: 700, color: m.c }}>{m.v}</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, marginBottom: 3, letterSpacing: "0.5px" }}>{m.l}</div>
+                                <div style={{ fontFamily: mono, fontSize: 15, fontWeight: 700, color: m.c }}>{m.v}</div>
                             </div>
                         ))}
                     </div>
@@ -396,7 +396,7 @@ function ShareCard({ d, onCopy, copied }) {
                         { l: `🧠 Cope: ${d.copeIndex}%`, ok: d.copeIndex < 30 },
                     ].map((b, i) => (
                         <span key={i} style={{
-                            fontFamily: mono, fontSize: 9, padding: "4px 10px", borderRadius: 99,
+                            fontFamily: mono, fontSize: 14, padding: "4px 10px", borderRadius: 99,
                             border: `1px solid ${b.ok ? C.green + "44" : C.red + "44"}`,
                             background: b.ok ? "rgba(74,222,128,0.08)" : "rgba(248,113,113,0.08)",
                             color: b.ok ? C.green : C.red
@@ -406,12 +406,12 @@ function ShareCard({ d, onCopy, copied }) {
 
                 {/* Quote */}
                 <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 14 }}>
-                    <div style={{ fontFamily: sans, fontSize: 12, color: pCol, fontStyle: "italic", fontWeight: 500, lineHeight: 1.5, marginBottom: 8 }}>
+                    <div style={{ fontFamily: sans, fontSize: 14, color: pCol, fontStyle: "italic", fontWeight: 500, lineHeight: 1.5, marginBottom: 8 }}>
                         "{quote}"
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>auditmybody.com</span>
-                        <span style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>
+                        <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>auditmybody.com</span>
+                        <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>
                             𝕏 <a href="https://twitter.com/Merulez99" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>@Merulez99</a>
                             {" | "}
                             <a href="https://twitter.com/ValvesSec" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>@ValvesSec</a>
@@ -445,18 +445,18 @@ function Results({ d, onReset, onShare, copied }) {
                         width: 8, height: 8, borderRadius: "50%", background: pCol, boxShadow: `0 0 12px ${pCol}`,
                         display: "inline-block", animation: "pulse 1.5s ease infinite", marginRight: 4
                     }} />
-                    <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 800, color: pCol, letterSpacing: "1px" }}>{d.pState}</span>
-                    <span style={{ fontFamily: mono, fontSize: 10, color: pCol, background: `${pCol}22`, padding: "1px 8px", borderRadius: 3, marginRight: 4 }}>Grade {d.grade}</span>
+                    <span style={{ fontFamily: sans, fontSize: 15, fontWeight: 800, color: pCol, letterSpacing: "1px" }}>{d.pState}</span>
+                    <span style={{ fontFamily: mono, fontSize: 15, color: pCol, background: `${pCol}22`, padding: "1px 8px", borderRadius: 3, marginRight: 4 }}>Grade {d.grade}</span>
                     <div style={{ width: 1, height: 14, background: C.dim, flexShrink: 0 }} />
                     {[{ l: "GAS", v: `${d.energy}%`, c: tc(d.energy) }, { l: "DEBT", v: `${d.grassDebt}m`, c: d.grassDebt > 120 ? C.red : d.grassDebt > 60 ? C.amber : C.green }, { l: "LIQ", v: `${d.liqRisk}%`, c: tc(d.liqRisk, true) }, { l: "EXPL", v: `${d.exploits.length}`, c: d.exploits.length > 2 ? C.red : d.exploits.length > 0 ? C.amber : C.green }].map((m, i) => (
                         <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, padding: "0 8px", borderLeft: `1px solid ${C.dim}` }}>
-                            <span style={{ fontFamily: mono, fontSize: 8, color: C.muted, letterSpacing: "1px" }}>{m.l}</span>
-                            <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: m.c }}>{m.v}</span>
+                            <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "1px" }}>{m.l}</span>
+                            <span style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: m.c }}>{m.v}</span>
                         </div>
                     ))}
                     <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
-                        <button onClick={onShare} style={{ background: copied ? "rgba(74,222,128,0.1)" : "transparent", border: `1px solid ${copied ? C.green + "66" : C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 9, color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px" }}>{copied ? "✓ COPIED" : "SHARE"}</button>
-                        <button onClick={onReset} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 9, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>RE-AUDIT</button>
+                        <button onClick={onShare} style={{ background: copied ? "rgba(74,222,128,0.1)" : "transparent", border: `1px solid ${copied ? C.green + "66" : C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px" }}>{copied ? "✓ COPIED" : "SHARE"}</button>
+                        <button onClick={onReset} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>RE-AUDIT</button>
                     </div>
                 </div>
             </div>
@@ -469,7 +469,7 @@ function Results({ d, onReset, onShare, copied }) {
                     width: 300, height: 300, borderRadius: "50%", background: pGlow, pointerEvents: "none", filter: "blur(40px)"
                 }} />
                 <div style={{ position: "relative" }}>
-                    <div style={{ fontFamily: mono, fontSize: 10, color: C.muted, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 16 }}>
+                    <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 16 }}>
                         🔬 AUDIT MY BODY — HUMAN PROTOCOL MONITOR v2.1
                     </div>
                     {/* Grade circle */}
@@ -477,12 +477,12 @@ function Results({ d, onReset, onShare, copied }) {
                         <Ring value={d.overallScore} col={gradeCol} size={140} stroke={12} />
                         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                             <span style={{ fontFamily: sans, fontSize: 52, fontWeight: 900, color: gradeCol, lineHeight: 1 }}>{d.grade}</span>
-                            <span style={{ fontFamily: mono, fontSize: 10, color: C.muted }}>{d.overallScore}pts</span>
+                            <span style={{ fontFamily: mono, fontSize: 15, color: C.muted }}>{d.overallScore}pts</span>
                         </div>
                     </div>
                     <div>
                         <div style={{ fontFamily: sans, fontSize: 32, fontWeight: 900, color: pCol, letterSpacing: "-1px", marginBottom: 8 }}>{d.pState}</div>
-                        <div style={{ fontFamily: sans, fontSize: 13, color: C.muted, fontStyle: "italic", maxWidth: 480, margin: "0 auto" }}>
+                        <div style={{ fontFamily: sans, fontSize: 15, color: C.muted, fontStyle: "italic", maxWidth: 480, margin: "0 auto" }}>
                             {d.pState === "OPTIMAL" ? "System healthy. Rare W. Don't get complacent." :
                                 d.pState === "DEGRADING" ? "System degrading. This is a warning. Touch grass before EOD." :
                                     d.pState === "CRITICAL" ? "System degradation detected. This is not a temporary bug." :
@@ -505,15 +505,15 @@ function Results({ d, onReset, onShare, copied }) {
                             background: C.card, border: `1px solid ${col}33`, borderRadius: 12,
                             padding: "20px 16px", textAlign: "center", boxShadow: `0 0 20px ${col}12`
                         }}>
-                            <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>{m.label}</div>
+                            <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>{m.label}</div>
                             <div style={{ position: "relative", display: "inline-block", marginBottom: 10 }}>
                                 <Ring value={m.val} col={col} size={80} stroke={7} />
                                 <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     <span style={{ fontFamily: mono, fontSize: 18, fontWeight: 700, color: col }}><CountUp to={m.val} />%</span>
                                 </div>
                             </div>
-                            <div style={{ fontFamily: mono, fontSize: 9, color: col }}>{m.sub}</div>
-                            <div style={{ fontFamily: mono, fontSize: 8, color: C.dim, marginTop: 2 }}>{m.tag}</div>
+                            <div style={{ fontFamily: mono, fontSize: 14, color: col }}>{m.sub}</div>
+                            <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginTop: 2 }}>{m.tag}</div>
                         </div>
                     );
                 })}
@@ -527,7 +527,7 @@ function Results({ d, onReset, onShare, copied }) {
             }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 16, alignItems: "start" }}>
                     <div>
-                        <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 6 }}>🌿 Touch Grass Debt</div>
+                        <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2.5px", textTransform: "uppercase", marginBottom: 6 }}>🌿 Touch Grass Debt</div>
                         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
                             <span style={{ fontFamily: sans, fontSize: 56, fontWeight: 900, color: d.grassDebt > 180 ? C.red : d.grassDebt > 60 ? C.amber : C.green, lineHeight: 1 }}>
                                 <CountUp to={d.grassDebt} dur={1200} />
@@ -541,7 +541,7 @@ function Results({ d, onReset, onShare, copied }) {
                             {[{ l: "Proof of Walk", v: d.pow.replace(/_/g, " "), c: d.pow === "VERIFIED" ? C.green : d.pow === "WEAK_PROOF" ? C.amber : C.red },
                             { l: "Sunlight Oracle", v: d.sunOracle, c: d.daysOut === 0 ? C.green : d.daysOut <= 2 ? C.amber : C.red },
                             { l: "Social Layer", v: d.socialLayer.replace(/_/g, " "), c: d.social > 0 ? C.green : C.red }].map((b, i) => (
-                                <div key={i}><div style={{ fontFamily: mono, fontSize: 8, color: C.dim, marginBottom: 2 }}>{b.l}</div><div style={{ fontFamily: mono, fontSize: 10, fontWeight: 700, color: b.c }}>{b.v}</div></div>
+                                <div key={i}><div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 2 }}>{b.l}</div><div style={{ fontFamily: mono, fontSize: 15, fontWeight: 700, color: b.c }}>{b.v}</div></div>
                             ))}
                         </div>
                     </div>
@@ -549,7 +549,7 @@ function Results({ d, onReset, onShare, copied }) {
                         {[{ l: "Degen Score", v: `${d.degenScore}%`, c: tc(d.degenScore, true) }, { l: "Cope Index", v: `${d.copeIndex}%`, c: tc(d.copeIndex, true) },
                         { l: "Grass Reserves", v: `${d.grassReserves}%`, c: tc(d.grassReserves) }, { l: "Burnout", v: `${d.burnout}%`, c: tc(d.burnout, true) }].map((m, i) => (
                             <div key={i} style={{ background: "rgba(99,179,237,0.05)", borderRadius: 8, padding: "8px 10px", border: `1px solid ${C.border}`, textAlign: "center" }}>
-                                <div style={{ fontFamily: mono, fontSize: 8, color: C.dim, marginBottom: 3 }}>{m.l}</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 3 }}>{m.l}</div>
                                 <div style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: m.c }}><CountUp to={parseInt(m.v)} />{m.v.includes("%") ? "%" : ""}</div>
                             </div>
                         ))}
@@ -557,7 +557,7 @@ function Results({ d, onReset, onShare, copied }) {
                 </div>
                 {d.grassDebt > 60 && (
                     <div style={{ marginTop: 14, padding: "10px 14px", background: `rgba(248,113,113,0.08)`, border: `1px solid ${C.red}33`, borderRadius: 8 }}>
-                        <span style={{ fontFamily: mono, fontSize: 10, color: C.red }}>
+                        <span style={{ fontFamily: mono, fontSize: 15, color: C.red }}>
                             {d.grassDebt > 240 ? "⚠ Max grass debt reached. System is dangerously disconnected from physical reality." :
                                 d.grassDebt > 120 ? "⚠ Significant grass debt. Compounds daily like a bad CDP position." :
                                     "⚠ Moderate grass debt. Clear before EOD. Non-negotiable."}
@@ -569,8 +569,8 @@ function Results({ d, onReset, onShare, copied }) {
             {/* ── INVARIANTS ── */}
             <div style={{ background: C.card, border: `1px solid ${d.brokenInvs > 2 ? C.red + "44" : d.brokenInvs > 0 ? C.amber + "44" : C.border}`, borderRadius: 12, padding: "20px", marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                    <span style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>System Invariants</span>
-                    <span style={{ fontFamily: mono, fontSize: 9, color: d.brokenInvs > 0 ? C.red : C.green }}>{d.brokenInvs}/5 VIOLATED</span>
+                    <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>System Invariants</span>
+                    <span style={{ fontFamily: mono, fontSize: 14, color: d.brokenInvs > 0 ? C.red : C.green }}>{d.brokenInvs}/5 VIOLATED</span>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     {d.invariants.map((inv, i) => (
@@ -581,15 +581,15 @@ function Results({ d, onReset, onShare, copied }) {
                         }}>
                             <span style={{ fontSize: 16 }}>{inv.ok ? "✅" : "❌"}</span>
                             <div>
-                                <div style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: inv.ok ? C.green : C.red, marginBottom: 2 }}>{inv.desc}</div>
-                                <div style={{ fontFamily: mono, fontSize: 9, color: C.muted }}>{inv.label} · actual: {inv.actual}</div>
+                                <div style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: inv.ok ? C.green : C.red, marginBottom: 2 }}>{inv.desc}</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted }}>{inv.label} · actual: {inv.actual}</div>
                             </div>
                         </div>
                     ))}
                 </div>
                 {d.brokenInvs > 2 && (
                     <div style={{ marginTop: 10, padding: "10px 14px", background: "rgba(248,113,113,0.08)", border: `1px solid ${C.red}33`, borderRadius: 8 }}>
-                        <span style={{ fontFamily: mono, fontSize: 10, color: C.red }}>⚠ {d.brokenInvs} invariants violated. System unstable. You are the rug pull.</span>
+                        <span style={{ fontFamily: mono, fontSize: 15, color: C.red }}>⚠ {d.brokenInvs} invariants violated. System unstable. You are the rug pull.</span>
                     </div>
                 )}
             </div>
@@ -598,8 +598,8 @@ function Results({ d, onReset, onShare, copied }) {
             {d.exploits.length > 0 && (
                 <div style={{ background: C.card, border: `1px solid ${C.red}44`, borderRadius: 12, padding: "20px", marginBottom: 12, boxShadow: C.redGlow }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                        <span style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Active Exploits</span>
-                        <span style={{ fontFamily: mono, fontSize: 9, color: C.red }}>{d.exploits.length} RUNNING</span>
+                        <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Active Exploits</span>
+                        <span style={{ fontFamily: mono, fontSize: 14, color: C.red }}>{d.exploits.length} RUNNING</span>
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: d.exploits.length > 2 ? "1fr 1fr" : "1fr", gap: 8 }}>
                         {d.exploits.map((ex, i) => (
@@ -609,12 +609,12 @@ function Results({ d, onReset, onShare, copied }) {
                             }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                                     <SevTag sev={ex.sev} />
-                                    <span style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>{ex.id} · {ex.dur}</span>
+                                    <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>{ex.id} · {ex.dur}</span>
                                 </div>
-                                <div style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, color: SEV[ex.sev], marginBottom: 4 }}>{ex.name}</div>
-                                <div style={{ fontFamily: sans, fontSize: 11, color: C.text, marginBottom: 6, lineHeight: 1.4 }}>{ex.impact}</div>
+                                <div style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: SEV[ex.sev], marginBottom: 4 }}>{ex.name}</div>
+                                <div style={{ fontFamily: sans, fontSize: 14, color: C.text, marginBottom: 6, lineHeight: 1.4 }}>{ex.impact}</div>
                                 <div style={{
-                                    fontFamily: mono, fontSize: 9, color: C.muted, fontStyle: "italic", padding: "6px 8px",
+                                    fontFamily: mono, fontSize: 14, color: C.muted, fontStyle: "italic", padding: "6px 8px",
                                     background: "rgba(0,0,0,0.25)", borderRadius: 5, borderLeft: `2px solid ${SEV[ex.sev]}55`
                                 }}>{ex.note}</div>
                             </div>
@@ -626,19 +626,19 @@ function Results({ d, onReset, onShare, copied }) {
             {/* ── AUDIT FINDINGS ── */}
             <div style={{ background: C.card, border: `1px solid ${d.findings.some(f => f.sev === "HIGH" || f.sev === "CRITICAL") ? C.red + "44" : C.border}`, borderRadius: 12, padding: "20px", marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                    <span style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Audit Findings</span>
-                    <span style={{ fontFamily: mono, fontSize: 9, color: C.muted }}>{d.findings.length} TOTAL</span>
+                    <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Audit Findings</span>
+                    <span style={{ fontFamily: mono, fontSize: 14, color: C.muted }}>{d.findings.length} TOTAL</span>
                 </div>
                 <div style={{ background: "rgba(0,0,0,0.3)", borderRadius: 8, padding: "14px 16px", border: `1px solid ${C.border}`, fontFamily: mono }}>
-                    <div style={{ fontSize: 10, color: C.muted, marginBottom: 10 }}>&gt; audit_my_body --audit --verbose</div>
+                    <div style={{ fontSize: 15, color: C.muted, marginBottom: 10 }}>&gt; audit_my_body --audit --verbose</div>
                     {d.findings.length === 0
-                        ? <div style={{ fontSize: 11, color: C.green }}>✓ No findings. Screenshot this. Incredibly rare.</div>
+                        ? <div style={{ fontSize: 14, color: C.green }}>✓ No findings. Screenshot this. Incredibly rare.</div>
                         : d.findings.map((f, i) => (
                             <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-start" }}>
-                                <span style={{ color: SEV[f.sev], fontSize: 9, fontWeight: 700, whiteSpace: "nowrap", marginTop: 1 }}>[{f.sev}]</span>
+                                <span style={{ color: SEV[f.sev], fontSize: 14, fontWeight: 700, whiteSpace: "nowrap", marginTop: 1 }}>[{f.sev}]</span>
                                 <div>
-                                    <div style={{ fontSize: 11, color: C.bright, lineHeight: 1.4 }}>{f.msg}</div>
-                                    <div style={{ fontSize: 9, color: C.dim, marginTop: 2 }}>{f.code} · {f.ref}</div>
+                                    <div style={{ fontSize: 14, color: C.bright, lineHeight: 1.4 }}>{f.msg}</div>
+                                    <div style={{ fontSize: 14, color: C.dim, marginTop: 2 }}>{f.code} · {f.ref}</div>
                                 </div>
                             </div>
                         ))}
@@ -648,7 +648,7 @@ function Results({ d, onReset, onShare, copied }) {
             {/* ── RECOVERY TRANSACTIONS ── */}
             {d.recoveryTx.length > 0 && (
                 <div style={{ background: C.card, border: `1px solid ${C.green}33`, borderRadius: 12, padding: "20px", marginBottom: 12 }}>
-                    <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 14 }}>Recovery Transactions</div>
+                    <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 14 }}>Recovery Transactions</div>
                     {d.recoveryTx.map((r, i) => (
                         <div key={i} style={{
                             display: "flex", gap: 12, padding: "11px 14px", background: "rgba(74,222,128,0.04)",
@@ -656,7 +656,7 @@ function Results({ d, onReset, onShare, copied }) {
                         }}>
                             <span style={{ fontSize: 18, flexShrink: 0 }}>{r.emoji}</span>
                             <div style={{ flex: 1 }}>
-                                <div style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, color: C.green, marginBottom: 4 }}>{r.action}</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: C.green, marginBottom: 4 }}>{r.action}</div>
                                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                                     {r.effect.map((e, j) => <span key={j} style={{ fontFamily: mono, fontSize: 9 }}><span style={{ color: C.muted }}>{e.k}: </span><span style={{ color: C.green }}>{e.v}</span></span>)}
                                 </div>
@@ -673,9 +673,9 @@ function Results({ d, onReset, onShare, copied }) {
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "20px", position: "relative", marginBottom: 12 }}>
                 <div style={{
                     position: "absolute", top: -9, left: 18, background: C.bg, padding: "0 10px",
-                    fontFamily: mono, fontSize: 9, color: C.blue, letterSpacing: "2px", textTransform: "uppercase"
+                    fontFamily: mono, fontSize: 14, color: C.blue, letterSpacing: "2px", textTransform: "uppercase"
                 }}>System Diagnostic</div>
-                <div style={{ fontFamily: mono, fontSize: 11, color: C.text, lineHeight: "2", whiteSpace: "pre-wrap" }}>{d.diag}</div>
+                <div style={{ fontFamily: mono, fontSize: 14, color: C.text, lineHeight: "2", whiteSpace: "pre-wrap" }}>{d.diag}</div>
             </div>
 
             {/* ── ADVANCED TELEMETRY ── */}
@@ -685,21 +685,21 @@ function Results({ d, onReset, onShare, copied }) {
                     cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center"
                 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Advanced Telemetry</span>
-                        <span style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>TX history · sim · node health · incidents</span>
+                        <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Advanced Telemetry</span>
+                        <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>TX history · sim · node health · incidents</span>
                     </div>
-                    <span style={{ fontFamily: mono, fontSize: 13, color: C.muted }}>{advOpen ? "▲" : "▼"}</span>
+                    <span style={{ fontFamily: mono, fontSize: 15, color: C.muted }}>{advOpen ? "▲" : "▼"}</span>
                 </button>
                 {advOpen && (
                     <div style={{ padding: "0 18px 18px", background: C.card, borderTop: `1px solid ${C.border}` }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16, marginBottom: 12 }}>
                             <div>
-                                <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>Recent Transactions</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>Recent Transactions</div>
                                 {d.txHistory.slice(0, 5).map((tx, i) => (
                                     <div key={i} style={{ display: "flex", gap: 8, padding: "7px 0", borderBottom: `1px solid ${C.border}` }}>
-                                        <span style={{ fontFamily: mono, fontSize: 9, color: C.dim, flexShrink: 0 }}>#{tx.id}</span>
+                                        <span style={{ fontFamily: mono, fontSize: 14, color: C.dim, flexShrink: 0 }}>#{tx.id}</span>
                                         <div style={{ flex: 1 }}>
-                                            <div style={{ fontFamily: mono, fontSize: 10, color: C.blue }}>{tx.op}</div>
+                                            <div style={{ fontFamily: mono, fontSize: 15, color: C.blue }}>{tx.op}</div>
                                             <div style={{ fontFamily: mono, fontSize: 9 }}>
                                                 <span style={{ color: tx.status === "OK" || tx.status === "RECOVERY" || tx.status === "PROOF_VERIFIED" ? C.green : C.red }}>→ {tx.status}</span>
                                                 <span style={{ color: C.dim }}> · {tx.delta}</span>
@@ -709,7 +709,7 @@ function Results({ d, onReset, onShare, copied }) {
                                 ))}
                             </div>
                             <div>
-                                <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>What-If Simulation</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>What-If Simulation</div>
                                 <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 8 }}>
                                     {d.sims.map((s, i) => (
                                         <button key={i} onClick={() => setSimIdx(simIdx === i ? null : i)} style={{
@@ -723,10 +723,10 @@ function Results({ d, onReset, onShare, copied }) {
                                 </div>
                                 {sim && (
                                     <div style={{ padding: "10px 12px", background: "rgba(96,165,250,0.08)", border: `1px solid ${C.blue}33`, borderRadius: 8 }}>
-                                        <div style={{ fontFamily: mono, fontSize: 9, color: C.blue, marginBottom: 5 }}>&gt; output:</div>
+                                        <div style={{ fontFamily: mono, fontSize: 14, color: C.blue, marginBottom: 5 }}>&gt; output:</div>
                                         {Object.entries(sim.delta).map(([k, v], i) => {
                                             const isNum = typeof v === "number";
-                                            return <div key={i} style={{ fontFamily: mono, fontSize: 10, color: isNum ? (v > 0 ? C.green : C.red) : C.blue }}>{k}: {isNum ? (v > 0 ? "+" : "") + v + "%" : v}</div>;
+                                            return <div key={i} style={{ fontFamily: mono, fontSize: 15, color: isNum ? (v > 0 ? C.green : C.red) : C.blue }}>{k}: {isNum ? (v > 0 ? "+" : "") + v + "%" : v}</div>;
                                         })}
                                     </div>
                                 )}
@@ -734,29 +734,29 @@ function Results({ d, onReset, onShare, copied }) {
                         </div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                             <div>
-                                <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>Validator Node</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>Validator Node</div>
                                 {[{ l: "uptime", v: `${d.uptime}%`, bar: d.uptime }, { l: "latency", v: `${d.latency}ms`, bar: Math.max(0, 100 - d.latency / 6) }, { l: "missed_blocks", v: `${d.missedB}/day`, bar: Math.max(0, 100 - d.missedB * 22) }].map((m, i) => (
                                     <div key={i} style={{ marginBottom: 8 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                            <span style={{ fontFamily: mono, fontSize: 9, color: C.muted }}>{m.l}</span>
-                                            <span style={{ fontFamily: mono, fontSize: 9, color: tc(m.bar), fontWeight: 700 }}>{m.v}</span>
+                                            <span style={{ fontFamily: mono, fontSize: 14, color: C.muted }}>{m.l}</span>
+                                            <span style={{ fontFamily: mono, fontSize: 14, color: tc(m.bar), fontWeight: 700 }}>{m.v}</span>
                                         </div>
                                         <Bar value={m.bar} col={tc(m.bar)} h={3} />
                                     </div>
                                 ))}
                             </div>
                             <div>
-                                <div style={{ fontFamily: mono, fontSize: 9, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>On-chain vs Off-chain</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>On-chain vs Off-chain</div>
                                 {[{ l: "on_chain", h: d.onChain, col: d.onChain > d.offChain + 4 ? C.red : C.amber }, { l: "off_chain", h: d.offChain, col: C.green }, { l: "sleep", h: d.sleep, col: C.blue }].map((b, i) => (
                                     <div key={i} style={{ marginBottom: 8 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                                            <span style={{ fontFamily: mono, fontSize: 9, color: C.muted }}>{b.l}</span>
-                                            <span style={{ fontFamily: mono, fontSize: 9, color: b.col, fontWeight: 700 }}>{b.h}h</span>
+                                            <span style={{ fontFamily: mono, fontSize: 14, color: C.muted }}>{b.l}</span>
+                                            <span style={{ fontFamily: mono, fontSize: 14, color: b.col, fontWeight: 700 }}>{b.h}h</span>
                                         </div>
                                         <Bar value={Math.round(b.h / 18 * 100)} col={b.col} h={4} />
                                     </div>
                                 ))}
-                                <div style={{ fontFamily: mono, fontSize: 9, color: C.dim, marginTop: 4 }}>On-chain ratio: {d.onChainRatio}% of waking hours</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginTop: 4 }}>On-chain ratio: {d.onChainRatio}% of waking hours</div>
                             </div>
                         </div>
                     </div>
@@ -764,8 +764,8 @@ function Results({ d, onReset, onShare, copied }) {
             </div>
 
             <div style={{ padding: "14px 0", borderTop: `1px solid ${C.border}`, textAlign: "center" }}>
-                <div style={{ fontFamily: mono, fontSize: 9, color: C.dim, marginBottom: 4 }}>auditmybody.com · Not a medical device · No data stored · References are real</div>
-                <div style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>
+                <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 4 }}>auditmybody.com · Not a medical device · No data stored · References are real</div>
+                <div style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>
                     𝕏 <a href="https://twitter.com/Merulez99" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>@Merulez99</a>
                     {" | "}
                     <a href="https://twitter.com/ValvesSec" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>@ValvesSec</a>
@@ -893,18 +893,18 @@ export default function AuditMyBody() {
                                 <div>
                                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                                         <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.green, display: "inline-block", boxShadow: `0 0 10px ${C.green}`, animation: "pulse 2s ease infinite" }} />
-                                        <span style={{ fontFamily: mono, fontSize: 9, color: C.green, letterSpacing: "3px", textTransform: "uppercase" }}>Audit My Body · Human Protocol Monitor v2.1</span>
+                                        <span style={{ fontFamily: mono, fontSize: 14, color: C.green, letterSpacing: "3px", textTransform: "uppercase" }}>Audit My Body · Human Protocol Monitor v2.1</span>
                                     </div>
                                     <h1 style={{ fontSize: "clamp(32px,6vw,52px)", fontWeight: 900, letterSpacing: "-2px", lineHeight: 1, margin: "0 0 8px", color: C.bright }}>
                                         Audit<br /><span style={{ color: C.green }}>My Body</span>
                                     </h1>
-                                    <p style={{ fontFamily: mono, fontSize: 11, color: C.muted, lineHeight: "1.7", margin: 0, maxWidth: 420 }}>
+                                    <p style={{ fontFamily: mono, fontSize: 14, color: C.muted, lineHeight: "1.7", margin: 0, maxWidth: 420 }}>
                                         A security-grade body audit for on-chain operators who forgot they have a body.
                                         <br /><span style={{ color: C.text }}>Powered by Human Protocol Monitor v2.1</span>
                                     </p>
                                 </div>
                                 <div style={{ textAlign: "right" }}>
-                                    <div style={{ fontFamily: mono, fontSize: 9, color: C.dim, marginBottom: 4 }}>
+                                    <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 4 }}>
                                         𝕏 <a href="https://twitter.com/Merulez99" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>@Merulez99</a>
                                         {" | "}
                                         <a href="https://twitter.com/ValvesSec" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>@ValvesSec</a>
@@ -916,7 +916,7 @@ export default function AuditMyBody() {
                                                 width: 24, height: 24, borderRadius: "50%", background: `${GRADE_COL[g]}22`,
                                                 border: `1px solid ${GRADE_COL[g]}55`, display: "flex", alignItems: "center", justifyContent: "center"
                                             }}>
-                                                <span style={{ fontFamily: mono, fontSize: 8, color: GRADE_COL[g], fontWeight: 700 }}>{g}</span>
+                                                <span style={{ fontFamily: mono, fontSize: 14, color: GRADE_COL[g], fontWeight: 700 }}>{g}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -926,7 +926,7 @@ export default function AuditMyBody() {
 
                         {/* Input card */}
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "24px 26px", boxShadow: "0 0 40px rgba(96,165,250,0.04)" }}>
-                            <div style={{ fontFamily: mono, fontSize: 10, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 16 }}>
+                            <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 16 }}>
                                 &gt; Protocol State Inputs — Be honest. The protocol doesn't lie.
                             </div>
 
@@ -942,11 +942,11 @@ export default function AuditMyBody() {
                                     <Stepper label="on_chain_hours" value={form.onChain} onChange={v => set("onChain", v)} min={0} max={18} unit="h" status={inputStatus("onChain")} />
                                     <Stepper label="gym_sessions_wk" value={form.gym} onChange={v => set("gym", v)} min={0} max={7} unit="x" status={inputStatus("gym")} />
                                     <div style={{ padding: "11px 0", borderBottom: `1px solid ${C.border}` }}>
-                                        <div style={{ fontFamily: mono, fontSize: 10, color: C.muted, marginBottom: 6 }}>break_frequency</div>
+                                        <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, marginBottom: 6 }}>break_frequency</div>
                                         <div style={{ display: "flex", gap: 5 }}>
                                             {["never", "rarely", "sometimes", "often", "always"].map((o, i) => (
                                                 <button key={i} onClick={() => set("breaks", i)} style={{
-                                                    padding: "4px 9px", borderRadius: 5, fontFamily: mono, fontSize: 9, cursor: "pointer",
+                                                    padding: "4px 9px", borderRadius: 5, fontFamily: mono, fontSize: 14, cursor: "pointer",
                                                     border: `1px solid ${form.breaks === i ? C.blue + "88" : C.border}`,
                                                     background: form.breaks === i ? "rgba(96,165,250,0.12)" : "transparent",
                                                     color: form.breaks === i ? C.blue : C.muted
@@ -966,7 +966,7 @@ export default function AuditMyBody() {
                                 width: "100%", marginTop: 20,
                                 background: "linear-gradient(135deg, rgba(74,222,128,0.15) 0%, rgba(74,222,128,0.08) 100%)",
                                 border: `1px solid ${C.green}66`, borderRadius: 10, padding: "15px",
-                                color: C.green, fontFamily: mono, fontSize: 12, fontWeight: 700,
+                                color: C.green, fontFamily: mono, fontSize: 14, fontWeight: 700,
                                 letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer",
                                 boxShadow: `0 0 20px ${C.greenGlow}`, transition: "all .2s"
                             }}>
@@ -974,8 +974,8 @@ export default function AuditMyBody() {
                             </button>
 
                             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
-                                <span style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>No data stored · No blockchain calls</span>
-                                <span style={{ fontFamily: mono, fontSize: 9, color: C.dim }}>Discord does not count as socializing.</span>
+                                <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>No data stored · No blockchain calls</span>
+                                <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>Discord does not count as socializing.</span>
                             </div>
                         </div>
 
@@ -988,9 +988,9 @@ export default function AuditMyBody() {
                             ].map((s, i) => (
                                 <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "14px 16px", textAlign: "center" }}>
                                     <div style={{ fontSize: 20, marginBottom: 6 }}>{s.emoji}</div>
-                                    <div style={{ fontFamily: mono, fontSize: 9, color: C.dim, marginBottom: 3 }}>{s.label}</div>
+                                    <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 3 }}>{s.label}</div>
                                     <div style={{ fontFamily: sans, fontSize: 14, fontWeight: 800, color: C.text }}>{s.val}</div>
-                                    <div style={{ fontFamily: mono, fontSize: 8, color: C.dim, marginTop: 2 }}>{s.sub}</div>
+                                    <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginTop: 2 }}>{s.sub}</div>
                                 </div>
                             ))}
                         </div>
@@ -1011,9 +1011,9 @@ export default function AuditMyBody() {
                                     width: 13, height: 13, border: `2px solid ${C.green}`, borderTop: `2px solid transparent`,
                                     borderRadius: "50%", animation: "spin .7s linear infinite", flexShrink: 0
                                 }} />
-                                <span style={{ fontFamily: mono, fontSize: 10, color: C.green, letterSpacing: "2px" }}>AUDIT IN PROGRESS — audit_my_body v2.1</span>
+                                <span style={{ fontFamily: mono, fontSize: 15, color: C.green, letterSpacing: "2px" }}>AUDIT IN PROGRESS — audit_my_body v2.1</span>
                             </div>
-                            <div style={{ fontFamily: mono, fontSize: 11, lineHeight: "2", minHeight: 240 }}>
+                            <div style={{ fontFamily: mono, fontSize: 14, lineHeight: "2", minHeight: 240 }}>
                                 {lines.map((l, i) => <div key={i} style={{ color: l.c }}>{l.t}</div>)}
                                 <span style={{ color: C.blue, animation: "blink 1s step-end infinite" }}>_</span>
                             </div>
