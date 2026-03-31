@@ -1066,7 +1066,15 @@ export default function AuditMyBody() {
 
     function generateBadge() {
         if (!data) return;
-        const w = 500, h = 700;
+        const memeImg = new Image();
+        memeImg.crossOrigin = "anonymous";
+        memeImg.onload = () => drawBadge(memeImg);
+        memeImg.onerror = () => drawBadge(null);
+        memeImg.src = `/memes/${data.personality.img}.png`;
+    }
+
+    function drawBadge(memeImg) {
+        const w = 500, h = 780;
         const canvas = badgeCanvasRef.current || document.createElement("canvas");
         badgeCanvasRef.current = canvas;
         canvas.width = w;
@@ -1323,6 +1331,38 @@ export default function AuditMyBody() {
             });
         }
 
+        // === PERSONALITY SECTION ===
+        const persY = 610;
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(32, persY - 8, w - 64, 1);
+
+        // Meme image
+        if (memeImg) {
+            const imgS = 60;
+            const imgX = 32, imgY = persY + 4;
+            ctx.save();
+            roundRect(ctx, imgX, imgY, imgS, imgS, 10);
+            ctx.clip();
+            ctx.drawImage(memeImg, imgX, imgY, imgS, imgS);
+            ctx.restore();
+            ctx.strokeStyle = "#e879f9" + "44";
+            ctx.lineWidth = 1;
+            roundRect(ctx, imgX, imgY, imgS, imgS, 10); ctx.stroke();
+        }
+
+        // Personality text
+        const ptX = memeImg ? 104 : 32;
+        ctx.font = `9px ${mono_}`;
+        ctx.fillStyle = "#4a7a9b";
+        ctx.textAlign = "left";
+        ctx.fillText("PROTOCOL PERSONALITY", ptX, persY + 16);
+        ctx.font = `bold 16px ${sans_}`;
+        ctx.fillStyle = "#e879f9";
+        ctx.fillText(data.personality.type, ptX, persY + 36);
+        ctx.font = `10px ${mono_}`;
+        ctx.fillStyle = "#fcd34d";
+        ctx.fillText(data.personality.sub, ptX, persY + 52);
+
         // === QUOTE ===
         const quote = data.pState === "LIQUIDATED" ? "You are the rug pull." :
             data.pState === "CRITICAL" ? "This is not a temporary bug." :
@@ -1382,7 +1422,15 @@ export default function AuditMyBody() {
     /* ── CERTIFICATE GENERATOR (Feature 9) ── */
     function generateCertificate() {
         if (!data) return;
-        const w = 700, h = 500;
+        const memeImg = new Image();
+        memeImg.crossOrigin = "anonymous";
+        memeImg.onload = () => drawCertificate(memeImg);
+        memeImg.onerror = () => drawCertificate(null);
+        memeImg.src = `/memes/${data.personality.img}.png`;
+    }
+
+    function drawCertificate(memeImg) {
+        const w = 700, h = 540;
         const canvas = certCanvasRef.current || document.createElement("canvas");
         certCanvasRef.current = canvas;
         canvas.width = w;
@@ -1485,14 +1533,39 @@ export default function AuditMyBody() {
         ctx.fillText("Protocol State: " + data.pState, w / 2, 275);
         ctx.restore();
 
-        // Personality
-        ctx.font = `14px ${sans_}`;
-        ctx.fillStyle = "#e879f9";
-        ctx.fillText(data.personality.emoji + " " + data.personality.type, w / 2, 300);
+        // Personality with meme
+        if (memeImg) {
+            const imgS = 44;
+            const totalW = imgS + 10 + ctx.measureText(data.personality.type).width;
+            const imgX = (w - totalW) / 2 - 20;
+            ctx.save();
+            roundRect(ctx, imgX, 282, imgS, imgS, 8);
+            ctx.clip();
+            ctx.drawImage(memeImg, imgX, 282, imgS, imgS);
+            ctx.restore();
+            ctx.strokeStyle = "#e879f9" + "44";
+            ctx.lineWidth = 1;
+            roundRect(ctx, imgX, 282, imgS, imgS, 8); ctx.stroke();
+            ctx.font = `bold 14px ${sans_}`;
+            ctx.fillStyle = "#e879f9";
+            ctx.textAlign = "left";
+            ctx.fillText(data.personality.type, imgX + imgS + 10, 300);
+            ctx.font = `10px ${mono_}`;
+            ctx.fillStyle = "#fcd34d";
+            ctx.fillText(data.personality.sub, imgX + imgS + 10, 318);
+            ctx.textAlign = "center";
+        } else {
+            ctx.font = `bold 14px ${sans_}`;
+            ctx.fillStyle = "#e879f9";
+            ctx.fillText(data.personality.type, w / 2, 300);
+            ctx.font = `10px ${mono_}`;
+            ctx.fillStyle = "#fcd34d";
+            ctx.fillText(data.personality.sub, w / 2, 318);
+        }
 
         // Divider 2
         ctx.fillStyle = divGrad;
-        ctx.fillRect(80, 315, w - 160, 1);
+        ctx.fillRect(80, 340, w - 160, 1);
 
         // === KEY STATS ROW ===
         const stats = [
@@ -1506,7 +1579,7 @@ export default function AuditMyBody() {
         const statStartX = (w - totalStatsW) / 2;
         stats.forEach((s, i) => {
             const sx = statStartX + i * (statW + statGap);
-            const sy = 332;
+            const sy = 358;
             ctx.fillStyle = "rgba(99,179,237,0.04)";
             roundRect(ctx, sx, sy, statW, 48, 6); ctx.fill();
             ctx.strokeStyle = "rgba(99,179,237,0.1)";
