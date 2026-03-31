@@ -174,17 +174,17 @@ function compute(f) {
 
     /* ── Personality Type (Feature 8) ── */
     let personality;
-    if (oc > 12 && sl < 6) personality = { type: "The Terminal Degen", emoji: "\u{1F5A5}\uFE0F", desc: "Lives in the terminal. Sleeps in the terminal. Is the terminal." };
-    else if (caf > 4 && energy < 50) personality = { type: "The Coffee Miner", emoji: "\u2615", desc: "Proof of Work: powered entirely by caffeine. Diminishing returns detected." };
-    else if (si > 10 && st < 3000) personality = { type: "The Sedentary Staker", emoji: "\u{1FA91}", desc: "Staking rewards: back pain. APY: declining health. Unstake immediately." };
-    else if (sl < 6 && sc > 10) personality = { type: "The Midnight Deployer", emoji: "\u{1F319}", desc: "Ships code at 3am. Ships bugs at 3am. Same thing apparently." };
-    else if (dO === 0 && st > 7500 && gy > 2) personality = { type: "The Touch Grass Evangelist", emoji: "\u{1F33F}", desc: "Touches grass AND ships code. The mythical balanced dev." };
-    else if (so >= 3 && oc < 6) personality = { type: "The Social Layer", emoji: "\u{1F91D}", desc: "More IRL meetings than git commits. The extrovert of crypto." };
-    else if (dO > 3) personality = { type: "The Vitamin D Shorter", emoji: "\u2600\uFE0F", desc: "Shorting vitamin D with max leverage. Liquidation: your bones." };
-    else if (burnout > 65) personality = { type: "The Burnout Speedrunner", emoji: "\u{1F525}", desc: "Any% burnout speedrun in progress. Current pace: world record." };
-    else if (sc > 12 && doomscroll > 60) personality = { type: "The Doomscroller", emoji: "\u{1F4F1}", desc: "Infinite scroll. Infinite cope. Zero alpha." };
-    else if (overallScore >= 65) personality = { type: "The Balanced Validator", emoji: "\u2696\uFE0F", desc: "Healthy, productive, touching grass. Proof that crypto people can function." };
-    else personality = { type: "The Average Degen", emoji: "\u{1F605}", desc: "Not great, not terrible. The median crypto lifestyle." };
+    if (oc > 12 && sl < 6) personality = { type: "The Terminal Degen", emoji: "💀", desc: "Lives in the terminal. Sleeps in the terminal. Is the terminal. Touch grass? Never heard of that protocol." };
+    else if (caf > 4 && energy < 50) personality = { type: "The Coffee Miner", emoji: "⛏️", desc: "Mining energy with caffeine. Hash rate: declining. Block reward: anxiety. Consider switching consensus mechanisms." };
+    else if (si > 10 && st < 3000) personality = { type: "The Sedentary Staker", emoji: "🗿", desc: "You've been staking your body in that chair so long you've become one with it. Unstaking period: unknown." };
+    else if (sl < 6 && sc > 10) personality = { type: "The Midnight Deployer", emoji: "🦇", desc: "Nocturnal creature. Ships at 3am. Reviews at 4am. Regrets at 7am. The dark forest is your natural habitat." };
+    else if (dO === 0 && st > 7500 && gy > 2) personality = { type: "The Gigachad Validator", emoji: "🏆", desc: "Touches grass, ships code, hits the gym. You're the mass adoption crypto needs. Absolute unit." };
+    else if (so >= 3 && oc < 6) personality = { type: "The Social Layer", emoji: "🦋", desc: "More IRL interactions than git commits. Are you sure you're in crypto? Teach us your ways." };
+    else if (dO > 3) personality = { type: "The Vitamin D Shorter", emoji: "🧛", desc: "Shorting vitamin D with max leverage. The sun is just a yellow circle on your screen at this point." };
+    else if (burnout > 65) personality = { type: "The Burnout Speedrunner", emoji: "🏎️", desc: "Any% burnout speedrun. Current pace: world record. Chat is telling you to stop. You won't." };
+    else if (sc > 12 && doomscroll > 60) personality = { type: "The Doomscroller", emoji: "🫠", desc: "Infinite scroll. Infinite cope. Zero alpha. Your thumb has more daily activity than your legs." };
+    else if (overallScore >= 65) personality = { type: "The Balanced Validator", emoji: "🧘", desc: "Somehow healthy AND in crypto. Scientists want to study you. Proof the simulation has exceptions." };
+    else personality = { type: "The Average Degen", emoji: "🐸", desc: "Not great, not terrible. The median crypto lifestyle. It's fine. Everything is fine. This is fine." };
 
     return {
         energy, liqRisk, burnout, revert, cogAlpha, cortisol, execQ, latency,
