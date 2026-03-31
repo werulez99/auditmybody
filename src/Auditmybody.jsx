@@ -174,17 +174,17 @@ function compute(f) {
 
     /* ── Personality Type (Feature 8) ── */
     let personality;
-    if (oc > 12 && sl < 6) personality = { type: "The Terminal Degen", emoji: "💀", desc: "Lives in the terminal. Sleeps in the terminal. Is the terminal. Touch grass? Never heard of that protocol." };
-    else if (caf > 4 && energy < 50) personality = { type: "The Coffee Miner", emoji: "⛏️", desc: "Mining energy with caffeine. Hash rate: declining. Block reward: anxiety. Consider switching consensus mechanisms." };
-    else if (si > 10 && st < 3000) personality = { type: "The Sedentary Staker", emoji: "🗿", desc: "You've been staking your body in that chair so long you've become one with it. Unstaking period: unknown." };
-    else if (sl < 6 && sc > 10) personality = { type: "The Midnight Deployer", emoji: "🦇", desc: "Nocturnal creature. Ships at 3am. Reviews at 4am. Regrets at 7am. The dark forest is your natural habitat." };
-    else if (dO === 0 && st > 7500 && gy > 2) personality = { type: "The Gigachad Validator", emoji: "🏆", desc: "Touches grass, ships code, hits the gym. You're the mass adoption crypto needs. Absolute unit." };
-    else if (so >= 3 && oc < 6) personality = { type: "The Social Layer", emoji: "🦋", desc: "More IRL interactions than git commits. Are you sure you're in crypto? Teach us your ways." };
-    else if (dO > 3) personality = { type: "The Vitamin D Shorter", emoji: "🧛", desc: "Shorting vitamin D with max leverage. The sun is just a yellow circle on your screen at this point." };
-    else if (burnout > 65) personality = { type: "The Burnout Speedrunner", emoji: "🏎️", desc: "Any% burnout speedrun. Current pace: world record. Chat is telling you to stop. You won't." };
-    else if (sc > 12 && doomscroll > 60) personality = { type: "The Doomscroller", emoji: "🫠", desc: "Infinite scroll. Infinite cope. Zero alpha. Your thumb has more daily activity than your legs." };
-    else if (overallScore >= 65) personality = { type: "The Balanced Validator", emoji: "🧘", desc: "Somehow healthy AND in crypto. Scientists want to study you. Proof the simulation has exceptions." };
-    else personality = { type: "The Average Degen", emoji: "🐸", desc: "Not great, not terrible. The median crypto lifestyle. It's fine. Everything is fine. This is fine." };
+    if (oc > 12 && sl < 6) personality = { type: "TERMINAL DEGEN", sub: "BODY IN CRITICAL STATE", emoji: "💀", img: "terminal_degen", desc: "Lives in the terminal. Sleeps in the terminal. Is the terminal. Touch grass? Never heard of that protocol." };
+    else if (caf > 4 && energy < 50) personality = { type: "COFFEE MINER", sub: "CAFFEINE IV DRIP ACTIVE", emoji: "⛏️", img: "coffee_miner", desc: "Mining energy with caffeine. Hash rate: declining. Block reward: anxiety. ROI on that 5th cup: negative." };
+    else if (si > 10 && st < 3000) personality = { type: "SEDENTARY STAKER", sub: "LOCKED POSITION — NO EXIT", emoji: "🗿", img: "sedentary_staker", desc: "Staking your body in that chair since market open. Unstaking period: unknown. Slashing risk: your spine." };
+    else if (sl < 6 && sc > 10) personality = { type: "MIDNIGHT DEPLOYER", sub: "SHIPPING AT 3:47AM", emoji: "🦇", img: "midnight_deployer", desc: "Ships at 3am. Reviews at 4am. Regrets at 7am. The dark forest is your natural habitat." };
+    else if (dO === 0 && st > 7500 && gy > 2) personality = { type: "GIGACHAD VALIDATOR", sub: "SYSTEM STABLE — ALL GREEN", emoji: "🏆", img: "gigachad", desc: "Touches grass, ships code, hits the gym. You are the mass adoption crypto needs. Absolute unit." };
+    else if (so >= 3 && oc < 6) personality = { type: "SOCIAL LAYER", sub: "HUMAN INTERACTION DETECTED", emoji: "🦋", img: "social_layer", desc: "More IRL interactions than git commits. Are you sure you're in crypto? Teach us your ways." };
+    else if (dO > 3) personality = { type: "VITAMIN D SHORTER", sub: "MAX LEVERAGE — LIQUIDATION IMMINENT", emoji: "🧛", img: "vitamin_d_shorter", desc: "Shorting vitamin D with max leverage. The sun is just a yellow circle on your screen at this point." };
+    else if (burnout > 65) personality = { type: "BURNOUT SPEEDRUNNER", sub: "ANY% WR PACE", emoji: "🏎️", img: "burnout_speedrunner", desc: "Any% burnout speedrun. Current pace: world record. Chat is telling you to stop. You won't." };
+    else if (sc > 12 && doomscroll > 60) personality = { type: "DOOMSCROLLER v1.3", sub: "ATTENTION LIQUIDITY DRAIN", emoji: "🫠", img: "doomscroller", desc: "Infinite scroll. Infinite cope. Zero alpha. Your thumb has more daily activity than your legs." };
+    else if (overallScore >= 65) personality = { type: "BALANCED VALIDATOR", sub: "PROTOCOL HEALTHY", emoji: "🧘", img: "balanced_validator", desc: "Somehow healthy AND in crypto. Scientists want to study you. Proof the simulation has exceptions." };
+    else personality = { type: "AVERAGE DEGEN", sub: "STATUS: IT'S FINE", emoji: "🐸", img: "average_degen", desc: "Not great, not terrible. The median crypto lifestyle. It's fine. Everything is fine. This is fine." };
 
     return {
         energy, liqRisk, burnout, revert, cogAlpha, cortisol, execQ, latency,
@@ -272,6 +272,24 @@ function CountUp({ to, dur }) {
         return () => { if (raf.current) cancelAnimationFrame(raf.current); };
     }, [to]);
     return <>{v}</>;
+}
+
+function PersonalityAvatar({ emoji, img }) {
+    const [imgErr, setImgErr] = useState(false);
+    const src = `/memes/${img}.png`;
+    return (
+        <div style={{
+            width: 72, height: 72, borderRadius: 14, flexShrink: 0, display: "flex",
+            alignItems: "center", justifyContent: "center", overflow: "hidden",
+            background: "rgba(232,121,249,0.08)", border: "1px solid rgba(232,121,249,0.2)"
+        }}>
+            {!imgErr ? (
+                <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14 }} onError={() => setImgErr(true)} />
+            ) : (
+                <span style={{ fontSize: 40, lineHeight: 1 }}>{emoji}</span>
+            )}
+        </div>
+    );
 }
 
 function Bar({ value, col, h, bg }) {
@@ -548,15 +566,16 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
 
             {/* ── PERSONALITY TYPE (Feature 8) ── */}
             <div style={{
-                background: "linear-gradient(135deg, rgba(96,165,250,0.06) 0%, rgba(232,121,249,0.06) 100%)",
-                border: `1px solid ${C.purple}44`, borderRadius: 12, padding: "20px 24px", marginBottom: 12,
-                boxShadow: `0 0 30px ${C.purpleGlow}`, display: "flex", alignItems: "center", gap: 20
+                background: "linear-gradient(135deg, rgba(96,165,250,0.06) 0%, rgba(232,121,249,0.08) 100%)",
+                border: `1px solid ${C.purple}44`, borderRadius: 14, padding: "22px 26px", marginBottom: 12,
+                boxShadow: `0 0 40px ${C.purpleGlow}`, display: "flex", alignItems: "center", gap: 22
             }}>
-                <div style={{ fontSize: 48, lineHeight: 1, flexShrink: 0 }}>{d.personality.emoji}</div>
-                <div>
+                <PersonalityAvatar emoji={d.personality.emoji} img={d.personality.img} />
+                <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: mono, fontSize: 11, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>Protocol Personality Type</div>
-                    <div style={{ fontFamily: sans, fontSize: 22, fontWeight: 900, color: C.purple, letterSpacing: "-0.5px", marginBottom: 6 }}>{d.personality.type}</div>
-                    <div style={{ fontFamily: sans, fontSize: 15, color: C.text, fontStyle: "italic", lineHeight: 1.5 }}>{d.personality.desc}</div>
+                    <div style={{ fontFamily: sans, fontSize: 24, fontWeight: 900, color: C.purple, letterSpacing: "-0.5px", marginBottom: 2 }}>{d.personality.type}</div>
+                    <div style={{ fontFamily: mono, fontSize: 11, color: C.amber, letterSpacing: "1.5px", marginBottom: 8 }}>{d.personality.sub}</div>
+                    <div style={{ fontFamily: sans, fontSize: 14, color: C.text, fontStyle: "italic", lineHeight: 1.5 }}>{d.personality.desc}</div>
                 </div>
             </div>
 
