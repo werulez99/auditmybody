@@ -22,6 +22,13 @@ const cl = (v, a, b) => Math.max(a, Math.min(b, v));
 const mono = "'Courier New', monospace";
 const sans = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 
+/* ─── MOBILE HOOK ────────────────────────────────────────────── */
+function useIsMobile(bp = 640) {
+    const [m, setM] = useState(typeof window !== "undefined" ? window.innerWidth < bp : false);
+    useEffect(() => { const h = () => setM(window.innerWidth < bp); window.addEventListener("resize", h); return () => window.removeEventListener("resize", h); }, [bp]);
+    return m;
+}
+
 /* ─── GRADE SYSTEM ────────────────────────────────────────────── */
 function getGrade(score) {
     if (score >= 80) return "A";
@@ -375,7 +382,7 @@ function Chips({ label, value, onChange, options }) {
 }
 
 /* ─── SHARE CARD ──────────────────────────────────────────────── */
-function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
+function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX, mob }) {
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
     const gradeCol = GRADE_COL[d.grade] || C.red;
     const quote = d.pState === "LIQUIDATED" ? "Protocol sunset imminent. You are the rug." :
@@ -395,7 +402,7 @@ function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
 
             <div style={{ padding: "24px 24px 20px" }}>
                 {/* Header row */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+                <div style={{ display: "flex", flexDirection: mob ? "column" : "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20, gap: 12 }}>
                     <div>
                         <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "3px", textTransform: "uppercase", marginBottom: 6 }}>
                             🔬 AUDIT MY BODY — HUMAN PROTOCOL MONITOR v2.1
@@ -407,7 +414,7 @@ function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
                             </div>
                         </div>
                     </div>
-                    <div style={{ display: "flex", gap: 8 }}>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
                         <button onClick={onGenerateBadge} style={{
                             background: "linear-gradient(135deg, rgba(232,121,249,0.12) 0%, rgba(96,165,250,0.12) 100%)",
                             border: `1px solid ${C.purple}55`,
@@ -433,7 +440,7 @@ function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
                 </div>
 
                 {/* Grade ring + key stats */}
-                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 20, marginBottom: 20, alignItems: "center" }}>
+                <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "auto 1fr", gap: 20, marginBottom: 20, alignItems: "center" }}>
                     <div style={{ position: "relative", width: 90, height: 90, flexShrink: 0 }}>
                         <Ring value={d.overallScore} col={gradeCol} size={90} stroke={9} />
                         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
@@ -441,7 +448,7 @@ function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
                             <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, marginTop: 2 }}>{d.overallScore}pts</span>
                         </div>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2,1fr)" : "repeat(3,1fr)", gap: 8 }}>
                         {[
                             { l: "Gas Level", v: `${d.energy}%`, c: tc(d.energy) },
                             { l: "Grass Debt", v: `${d.grassDebt}m`, c: d.grassDebt > 180 ? C.red : d.grassDebt > 60 ? C.amber : C.green },
@@ -459,7 +466,7 @@ function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
                 </div>
 
                 {/* Status badges */}
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16, justifyContent: mob ? "center" : "flex-start" }}>
                     {[
                         { l: `☀ ${d.sunOracle}`, ok: d.daysOut === 0 },
                         { l: `🤝 ${d.socialLayer}`, ok: d.social > 0 },
@@ -495,7 +502,7 @@ function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
 }
 
 /* ─── RESULTS ─────────────────────────────────────────────────── */
-function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate, history }) {
+function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate, history, mob }) {
     const [advOpen, setAdvOpen] = useState(false);
     const [simIdx, setSimIdx] = useState(null);
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
@@ -520,12 +527,12 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
                     <span style={{ fontFamily: mono, fontSize: 15, color: pCol, background: `${pCol}22`, padding: "1px 8px", borderRadius: 3, marginRight: 4 }}>Grade {d.grade}</span>
                     <div style={{ width: 1, height: 14, background: C.dim, flexShrink: 0 }} />
                     {[{ l: "GAS", v: `${d.energy}%`, c: tc(d.energy) }, { l: "DEBT", v: `${d.grassDebt}m`, c: d.grassDebt > 120 ? C.red : d.grassDebt > 60 ? C.amber : C.green }, { l: "LIQ", v: `${d.liqRisk}%`, c: tc(d.liqRisk, true) }, { l: "EXPL", v: `${d.exploits.length}`, c: d.exploits.length > 2 ? C.red : d.exploits.length > 0 ? C.amber : C.green }].map((m, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, padding: "0 8px", borderLeft: `1px solid ${C.dim}` }}>
+                        <div key={i} style={{ display: mob ? "none" : "flex", alignItems: "center", gap: 5, padding: "0 8px", borderLeft: `1px solid ${C.dim}` }}>
                             <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "1px" }}>{m.l}</span>
                             <span style={{ fontFamily: mono, fontSize: 14, fontWeight: 700, color: m.c }}>{m.v}</span>
                         </div>
                     ))}
-                    <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+                    <div style={{ marginLeft: "auto", display: "flex", gap: 6, flexWrap: "wrap" }}>
                         <button onClick={onShareX} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.text, cursor: "pointer", letterSpacing: "1px" }}>𝕏 Share</button>
                         <button onClick={onGenerateBadge} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>🎨 BADGE</button>
                         <button onClick={onGenerateCertificate} style={{ background: "transparent", border: `1px solid ${C.amber}44`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.amber, cursor: "pointer", letterSpacing: "1px" }}>{"\uD83D\uDCDC"} CERT</button>
@@ -569,10 +576,10 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
             <div style={{
                 background: "linear-gradient(135deg, rgba(96,165,250,0.06) 0%, rgba(232,121,249,0.08) 100%)",
                 border: `1px solid ${C.purple}44`, borderRadius: 14, padding: "22px 26px", marginBottom: 12,
-                boxShadow: `0 0 40px ${C.purpleGlow}`, display: "flex", alignItems: "center", gap: 22
+                boxShadow: `0 0 40px ${C.purpleGlow}`, display: "flex", flexDirection: mob ? "column" : "row", alignItems: "center", gap: 22
             }}>
                 <PersonalityAvatar emoji={d.personality.emoji} img={d.personality.img} />
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, textAlign: mob ? "center" : "left" }}>
                     <div style={{ fontFamily: mono, fontSize: 11, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>Protocol Personality Type</div>
                     <div style={{ fontFamily: sans, fontSize: 24, fontWeight: 900, color: C.purple, letterSpacing: "-0.5px", marginBottom: 2 }}>{d.personality.type}</div>
                     <div style={{ fontFamily: mono, fontSize: 11, color: C.amber, letterSpacing: "1.5px", marginBottom: 8 }}>{d.personality.sub}</div>
@@ -581,7 +588,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
             </div>
 
             {/* ── HERO METRICS ROW ── */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: mob ? "repeat(2,1fr)" : "repeat(3,1fr)", gap: 10, marginBottom: 12 }}>
                 {[
                     { label: "GAS LEVEL", tag: "Energy Pool", val: d.energy, inv: false, sub: d.energy < 30 ? "CRITICAL" : d.energy < 55 ? "LOW" : "NOMINAL" },
                     { label: "LIQ RISK", tag: "Liquidation", val: d.liqRisk, inv: true, sub: d.liqRisk > 70 ? "MARGIN CALL" : d.liqRisk > 45 ? "ELEVATED" : "SAFE" },
@@ -755,7 +762,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
             )}
 
             {/* ── SHARE CARD ── */}
-            <ShareCard d={d} onGenerateBadge={onGenerateBadge} onGenerateCertificate={onGenerateCertificate} onShareX={onShareX} />
+            <ShareCard d={d} onGenerateBadge={onGenerateBadge} onGenerateCertificate={onGenerateCertificate} onShareX={onShareX} mob={mob} />
 
             {/* ── PROTOCOL HISTORY (Feature 3) ── */}
             {history && history.length > 0 && (() => {
@@ -875,7 +882,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
                 </button>
                 {advOpen && (
                     <div style={{ padding: "0 18px 18px", background: C.card, borderTop: `1px solid ${C.border}` }}>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16, marginBottom: 12 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12, marginTop: 16, marginBottom: 12 }}>
                             <div>
                                 <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>Recent Transactions</div>
                                 {d.txHistory.slice(0, 5).map((tx, i) => (
@@ -915,7 +922,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
                                 )}
                             </div>
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: 12 }}>
                             <div>
                                 <div style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 10 }}>Validator Node</div>
                                 {[{ l: "uptime", v: `${d.uptime}%`, bar: d.uptime }, { l: "latency", v: `${d.latency}ms`, bar: Math.max(0, 100 - d.latency / 6) }, { l: "missed_blocks", v: `${d.missedB}/day`, bar: Math.max(0, 100 - d.missedB * 22) }].map((m, i) => (
@@ -986,6 +993,7 @@ export default function AuditMyBody() {
     const [lines, setLines] = useState([]);
     const ivRef = useRef(null);
     const [history, setHistory] = useState([]);
+    const mob = useIsMobile();
 
     /* ── Load history from localStorage on mount ── */
     useEffect(() => {
@@ -1694,7 +1702,7 @@ export default function AuditMyBody() {
                     <div style={{ animation: "fadeIn .5s ease" }}>
                         {/* Header */}
                         <div style={{ padding: "36px 0 28px" }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
+                            <div style={{ display: "flex", flexDirection: mob ? "column" : "row", justifyContent: "space-between", alignItems: mob ? "flex-start" : "flex-start", flexWrap: "wrap", gap: 8 }}>
                                 <div>
                                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                                         <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.green, display: "inline-block", boxShadow: `0 0 10px ${C.green}`, animation: "pulse 2s ease infinite" }} />
@@ -1735,7 +1743,7 @@ export default function AuditMyBody() {
                                 &gt; Protocol State Inputs — Be honest. The protocol doesn't lie.
                             </div>
 
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 28px" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: "0 28px" }}>
                                 <div>
                                     <Stepper label="sleep_hours" value={form.sleep} onChange={v => set("sleep", v)} min={3} max={12} unit="h" status={inputStatus("sleep")} />
                                     <Stepper label="sitting_hours" value={form.sitting} onChange={v => set("sitting", v)} min={0} max={16} unit="h" status={inputStatus("sitting")} />
@@ -1751,7 +1759,7 @@ export default function AuditMyBody() {
                                     <Stepper label="caffeine_intake" value={form.caffeine} onChange={v => set("caffeine", v)} min={0} max={10} unit="cups" step={1} status={inputStatus("caffeine")} />
                                     <div style={{ padding: "11px 0", borderBottom: `1px solid ${C.border}` }}>
                                         <div style={{ fontFamily: mono, fontSize: 15, color: C.muted, marginBottom: 6 }}>break_frequency</div>
-                                        <div style={{ display: "flex", gap: 5 }}>
+                                        <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
                                             {["never", "rarely", "sometimes", "often", "always"].map((o, i) => (
                                                 <button key={i} onClick={() => set("breaks", i)} style={{
                                                     padding: "4px 9px", borderRadius: 5, fontFamily: mono, fontSize: 14, cursor: "pointer",
@@ -1765,7 +1773,7 @@ export default function AuditMyBody() {
                                 </div>
                             </div>
 
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 28px", marginTop: 4 }}>
+                            <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "1fr 1fr", gap: "0 28px", marginTop: 4 }}>
                                 <Chips label="sleep_schedule" value={form.sleepCon} onChange={v => set("sleepCon", v)} options={["chaotic", "inconsistent", "mostly_ok", "consistent"]} />
                                 <Chips label="social_layer" value={form.social} onChange={v => set("social", v)} options={["offline", "low", "moderate", "active"]} />
                                 <Chips label="posture_quality" value={form.posture} onChange={v => set("posture", v)} options={["terrible", "poor", "decent", "good"]} />
@@ -1783,14 +1791,14 @@ export default function AuditMyBody() {
                                 🔬 AUDIT MY BODY — SUBMIT PROOF OF EXISTENCE
                             </button>
 
-                            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
+                            <div style={{ display: "flex", flexDirection: mob ? "column" : "row", justifyContent: "space-between", marginTop: 12, gap: 4, alignItems: "center" }}>
                                 <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>No data stored · No blockchain calls</span>
                                 <span style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>Discord does not count as socializing.</span>
                             </div>
                         </div>
 
                         {/* Fun stats */}
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginTop: 12 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: mob ? "1fr" : "repeat(3,1fr)", gap: 8, marginTop: 12 }}>
                             {(() => {
                                 const avgGrade = history.length > 0
                                     ? getGrade(Math.round(history.reduce((sum, h) => sum + h.overallScore, 0) / history.length))
@@ -1841,7 +1849,7 @@ export default function AuditMyBody() {
 
                 {/* ── RESULTS ── */}
                 {view === "results" && data && (
-                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShareX={shareOnX} onGenerateBadge={generateBadge} onGenerateCertificate={generateCertificate} history={history} />
+                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShareX={shareOnX} onGenerateBadge={generateBadge} onGenerateCertificate={generateCertificate} history={history} mob={mob} />
                 )}
             </div>
         </div>
