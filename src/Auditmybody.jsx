@@ -172,14 +172,30 @@ function compute(f) {
 
     const diag = buildDiag(pState, energy, cogAlpha, liqRisk, grassDebt, pow, dO, sl, degenScore, grade);
 
+    /* ── Personality Type (Feature 8) ── */
+    let personality;
+    if (oc > 12 && sl < 6) personality = { type: "The Terminal Degen", emoji: "\u{1F5A5}\uFE0F", desc: "Lives in the terminal. Sleeps in the terminal. Is the terminal." };
+    else if (caf > 4 && energy < 50) personality = { type: "The Coffee Miner", emoji: "\u2615", desc: "Proof of Work: powered entirely by caffeine. Diminishing returns detected." };
+    else if (si > 10 && st < 3000) personality = { type: "The Sedentary Staker", emoji: "\u{1FA91}", desc: "Staking rewards: back pain. APY: declining health. Unstake immediately." };
+    else if (sl < 6 && sc > 10) personality = { type: "The Midnight Deployer", emoji: "\u{1F319}", desc: "Ships code at 3am. Ships bugs at 3am. Same thing apparently." };
+    else if (dO === 0 && st > 7500 && gy > 2) personality = { type: "The Touch Grass Evangelist", emoji: "\u{1F33F}", desc: "Touches grass AND ships code. The mythical balanced dev." };
+    else if (so >= 3 && oc < 6) personality = { type: "The Social Layer", emoji: "\u{1F91D}", desc: "More IRL meetings than git commits. The extrovert of crypto." };
+    else if (dO > 3) personality = { type: "The Vitamin D Shorter", emoji: "\u2600\uFE0F", desc: "Shorting vitamin D with max leverage. Liquidation: your bones." };
+    else if (burnout > 65) personality = { type: "The Burnout Speedrunner", emoji: "\u{1F525}", desc: "Any% burnout speedrun in progress. Current pace: world record." };
+    else if (sc > 12 && doomscroll > 60) personality = { type: "The Doomscroller", emoji: "\u{1F4F1}", desc: "Infinite scroll. Infinite cope. Zero alpha." };
+    else if (overallScore >= 65) personality = { type: "The Balanced Validator", emoji: "\u2696\uFE0F", desc: "Healthy, productive, touching grass. Proof that crypto people can function." };
+    else personality = { type: "The Average Degen", emoji: "\u{1F605}", desc: "Not great, not terrible. The median crypto lifestyle." };
+
     return {
         energy, liqRisk, burnout, revert, cogAlpha, cortisol, execQ, latency,
         uptime, missedB, pState, stateIdx, leverage, entropy, yearRisk,
         offChain, onChain: oc, sleep: sl, sitting: si, daysOut: dO, steps: st,
         social: so, sleepCon: sk, breaks: br, water: wa, meals: ml, posture: po, caffeine: caf, stretch: str,
+        screen: sc, gym: gy,
         mental, grassDebt, grassReserves, copeIndex, doomscroll, degenScore,
         overallScore, grade, pow, sunOracle, socialLayer, onChainRatio,
         invariants, brokenInvs, exploits, findings, recoveryTx, txHistory, sims, diag,
+        personality,
     };
 }
 
@@ -340,7 +356,7 @@ function Chips({ label, value, onChange, options }) {
 }
 
 /* ─── SHARE CARD ──────────────────────────────────────────────── */
-function ShareCard({ d, onGenerateBadge, onShareX }) {
+function ShareCard({ d, onGenerateBadge, onGenerateCertificate, onShareX }) {
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
     const gradeCol = GRADE_COL[d.grade] || C.red;
     const quote = d.pState === "LIQUIDATED" ? "Protocol sunset imminent. You are the rug." :
@@ -380,6 +396,13 @@ function ShareCard({ d, onGenerateBadge, onShareX }) {
                             color: C.purple, cursor: "pointer", letterSpacing: "1px",
                             textTransform: "uppercase", transition: "all .2s"
                         }}>🎨 BADGE</button>
+                        <button onClick={onGenerateCertificate} style={{
+                            background: "linear-gradient(135deg, rgba(252,211,77,0.12) 0%, rgba(251,146,60,0.12) 100%)",
+                            border: `1px solid ${C.amber}55`,
+                            borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
+                            color: C.amber, cursor: "pointer", letterSpacing: "1px",
+                            textTransform: "uppercase", transition: "all .2s"
+                        }}>{"\uD83D\uDCDC"} CERTIFICATE</button>
                         <button onClick={onShareX} style={{
                             background: "rgba(99,179,237,0.08)",
                             border: `1px solid ${C.border}`,
@@ -453,7 +476,7 @@ function ShareCard({ d, onGenerateBadge, onShareX }) {
 }
 
 /* ─── RESULTS ─────────────────────────────────────────────────── */
-function Results({ d, onReset, onShareX, onGenerateBadge }) {
+function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate, history }) {
     const [advOpen, setAdvOpen] = useState(false);
     const [simIdx, setSimIdx] = useState(null);
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
@@ -486,6 +509,7 @@ function Results({ d, onReset, onShareX, onGenerateBadge }) {
                     <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
                         <button onClick={onShareX} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.text, cursor: "pointer", letterSpacing: "1px" }}>𝕏 Share</button>
                         <button onClick={onGenerateBadge} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>🎨 BADGE</button>
+                        <button onClick={onGenerateCertificate} style={{ background: "transparent", border: `1px solid ${C.amber}44`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.amber, cursor: "pointer", letterSpacing: "1px" }}>{"\uD83D\uDCDC"} CERT</button>
                         <button onClick={onReset} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>RE-AUDIT</button>
                     </div>
                 </div>
@@ -519,6 +543,20 @@ function Results({ d, onReset, onShareX, onGenerateBadge }) {
                                         "Protocol sunset imminent. You are rugging yourself."}
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* ── PERSONALITY TYPE (Feature 8) ── */}
+            <div style={{
+                background: "linear-gradient(135deg, rgba(96,165,250,0.06) 0%, rgba(232,121,249,0.06) 100%)",
+                border: `1px solid ${C.purple}44`, borderRadius: 12, padding: "20px 24px", marginBottom: 12,
+                boxShadow: `0 0 30px ${C.purpleGlow}`, display: "flex", alignItems: "center", gap: 20
+            }}>
+                <div style={{ fontSize: 48, lineHeight: 1, flexShrink: 0 }}>{d.personality.emoji}</div>
+                <div>
+                    <div style={{ fontFamily: mono, fontSize: 11, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 4 }}>Protocol Personality Type</div>
+                    <div style={{ fontFamily: sans, fontSize: 22, fontWeight: 900, color: C.purple, letterSpacing: "-0.5px", marginBottom: 6 }}>{d.personality.type}</div>
+                    <div style={{ fontFamily: sans, fontSize: 15, color: C.text, fontStyle: "italic", lineHeight: 1.5 }}>{d.personality.desc}</div>
                 </div>
             </div>
 
@@ -697,7 +735,102 @@ function Results({ d, onReset, onShareX, onGenerateBadge }) {
             )}
 
             {/* ── SHARE CARD ── */}
-            <ShareCard d={d} onGenerateBadge={onGenerateBadge} onShareX={onShareX} />
+            <ShareCard d={d} onGenerateBadge={onGenerateBadge} onGenerateCertificate={onGenerateCertificate} onShareX={onShareX} />
+
+            {/* ── PROTOCOL HISTORY (Feature 3) ── */}
+            {history && history.length > 0 && (() => {
+                const recent = history.slice(-10);
+                const scores = recent.map(h => h.overallScore);
+                const dates = recent.map(h => { const d2 = new Date(h.date); return `${d2.getMonth() + 1}/${d2.getDate()}`; });
+                const minS = Math.max(0, Math.min(...scores) - 10);
+                const maxS = Math.min(100, Math.max(...scores) + 10);
+                const range = maxS - minS || 1;
+                const svgW = 680, svgH = 200, padL = 40, padR = 20, padT = 20, padB = 30;
+                const plotW = svgW - padL - padR, plotH = svgH - padT - padB;
+                const pts = scores.map((s, i) => ({
+                    x: padL + (scores.length === 1 ? plotW / 2 : (i / (scores.length - 1)) * plotW),
+                    y: padT + plotH - ((s - minS) / range) * plotH
+                }));
+                const polyline = pts.map(p => `${p.x},${p.y}`).join(" ");
+                const trend = scores.length < 2 ? 0 : scores[scores.length - 1] - scores[0];
+                const lineCol = trend > 5 ? C.green : trend < -5 ? C.red : C.amber;
+
+                return (
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "20px", marginBottom: 12 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                            <span style={{ fontFamily: mono, fontSize: 14, color: C.muted, letterSpacing: "2px", textTransform: "uppercase" }}>Protocol History</span>
+                            <span style={{ fontFamily: mono, fontSize: 14, color: lineCol }}>{history.length} audit{history.length !== 1 ? "s" : ""} recorded</span>
+                        </div>
+
+                        {history.length === 1 ? (
+                            <div style={{ textAlign: "center", padding: "24px 16px", background: "rgba(99,179,237,0.05)", borderRadius: 8, border: `1px solid ${C.border}` }}>
+                                <div style={{ fontSize: 28, marginBottom: 8 }}>{"\uD83D\uDCCA"}</div>
+                                <div style={{ fontFamily: sans, fontSize: 15, color: C.text, marginBottom: 4 }}>First audit recorded.</div>
+                                <div style={{ fontFamily: mono, fontSize: 14, color: C.muted }}>Come back tomorrow to track your progress.</div>
+                            </div>
+                        ) : (
+                            <>
+                                <div style={{ background: "rgba(0,0,0,0.3)", borderRadius: 8, padding: "12px", border: `1px solid ${C.border}`, marginBottom: 12 }}>
+                                    <svg width="100%" height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} style={{ display: "block" }}>
+                                        {/* Y-axis gridlines */}
+                                        {[0, 25, 50, 75, 100].filter(v => v >= minS && v <= maxS).map(v => {
+                                            const y = padT + plotH - ((v - minS) / range) * plotH;
+                                            return (
+                                                <g key={v}>
+                                                    <line x1={padL} y1={y} x2={svgW - padR} y2={y} stroke="rgba(99,179,237,0.08)" strokeWidth={1} />
+                                                    <text x={padL - 6} y={y + 4} fill={C.dim} fontSize={10} fontFamily={mono} textAnchor="end">{v}</text>
+                                                </g>
+                                            );
+                                        })}
+                                        {/* Area fill */}
+                                        <polygon
+                                            points={`${pts[0].x},${padT + plotH} ${polyline} ${pts[pts.length - 1].x},${padT + plotH}`}
+                                            fill={`${lineCol}15`}
+                                        />
+                                        {/* Line */}
+                                        <polyline points={polyline} fill="none" stroke={lineCol} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+                                        {/* Dots + labels */}
+                                        {pts.map((p, i) => (
+                                            <g key={i}>
+                                                <circle cx={p.x} cy={p.y} r={4} fill={C.bg} stroke={lineCol} strokeWidth={2} />
+                                                <text x={p.x} y={svgH - 6} fill={C.dim} fontSize={9} fontFamily={mono} textAnchor="middle">{dates[i]}</text>
+                                            </g>
+                                        ))}
+                                    </svg>
+                                </div>
+
+                                {/* Recent audits table */}
+                                <div style={{ overflowX: "auto" }}>
+                                    <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: mono, fontSize: 14 }}>
+                                        <thead>
+                                            <tr>
+                                                {["Date", "Grade", "Score", "State", "Personality"].map(h => (
+                                                    <th key={h} style={{ textAlign: "left", padding: "8px 10px", color: C.muted, borderBottom: `1px solid ${C.border}`, letterSpacing: "1px", fontSize: 11, textTransform: "uppercase" }}>{h}</th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {recent.slice().reverse().map((h, i) => {
+                                                const gCol = GRADE_COL[h.grade] || C.muted;
+                                                const sCol = h.pState === "OPTIMAL" ? C.green : h.pState === "DEGRADING" ? C.amber : h.pState === "CRITICAL" ? C.red : C.purple;
+                                                return (
+                                                    <tr key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
+                                                        <td style={{ padding: "8px 10px", color: C.text }}>{new Date(h.date).toLocaleDateString()}</td>
+                                                        <td style={{ padding: "8px 10px", color: gCol, fontWeight: 700 }}>{h.grade}</td>
+                                                        <td style={{ padding: "8px 10px", color: C.text }}>{h.overallScore}</td>
+                                                        <td style={{ padding: "8px 10px", color: sCol }}>{h.pState}</td>
+                                                        <td style={{ padding: "8px 10px", color: C.muted }}>{h.personality || "-"}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                );
+            })()}
 
             {/* ── DIAGNOSTIC ── */}
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "20px", position: "relative", marginBottom: 12 }}>
@@ -810,9 +943,19 @@ export default function AuditMyBody() {
     const [view, setView] = useState("input");
     const [form, setForm] = useState({ sleep: 6, sitting: 9, daysOut: 3, steps: 3500, gym: 1, screen: 10, breaks: 1, onChain: 10, social: 1, sleepCon: 1, water: 4, meals: 2, posture: 1, caffeine: 3, stretch: 0 });
     const badgeCanvasRef = useRef(null);
+    const certCanvasRef = useRef(null);
     const [data, setData] = useState(null);
     const [lines, setLines] = useState([]);
     const ivRef = useRef(null);
+    const [history, setHistory] = useState([]);
+
+    /* ── Load history from localStorage on mount ── */
+    useEffect(() => {
+        try {
+            const stored = localStorage.getItem("auditmybody_history");
+            if (stored) setHistory(JSON.parse(stored));
+        } catch (_) { /* ignore parse errors */ }
+    }, []);
 
     const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -821,6 +964,24 @@ export default function AuditMyBody() {
         setData(result);
         setLines([]);
         setView("scan");
+
+        /* ── Save to history (Feature 3) ── */
+        try {
+            const entry = {
+                date: new Date().toISOString(),
+                grade: result.grade,
+                overallScore: result.overallScore,
+                energy: result.energy,
+                liqRisk: result.liqRisk,
+                degenScore: result.degenScore,
+                pState: result.pState,
+                personality: result.personality.type,
+            };
+            const prev = (() => { try { const s = localStorage.getItem("auditmybody_history"); return s ? JSON.parse(s) : []; } catch (_) { return []; } })();
+            const updated = [...prev, entry].slice(-30);
+            localStorage.setItem("auditmybody_history", JSON.stringify(updated));
+            setHistory(updated);
+        } catch (_) { /* localStorage unavailable */ }
     }
 
     useEffect(() => {
@@ -1199,6 +1360,195 @@ export default function AuditMyBody() {
         ctx.closePath();
     }
 
+    /* ── CERTIFICATE GENERATOR (Feature 9) ── */
+    function generateCertificate() {
+        if (!data) return;
+        const w = 700, h = 500;
+        const canvas = certCanvasRef.current || document.createElement("canvas");
+        certCanvasRef.current = canvas;
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        const pCol = data.pState === "OPTIMAL" ? "#4ade80" : data.pState === "DEGRADING" ? "#fcd34d" : data.pState === "CRITICAL" ? "#f87171" : "#e879f9";
+        const gradeCol = GRADE_COL[data.grade] || "#f87171";
+        const mono_ = "'Courier New', monospace";
+        const sans_ = "system-ui, sans-serif";
+        const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+        // === BACKGROUND ===
+        const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+        bgGrad.addColorStop(0, "#060d1a");
+        bgGrad.addColorStop(1, "#0a1525");
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        // === ORNAMENTAL DOUBLE BORDER ===
+        ctx.strokeStyle = "rgba(252,211,77,0.35)";
+        ctx.lineWidth = 2;
+        roundRect(ctx, 10, 10, w - 20, h - 20, 8); ctx.stroke();
+        ctx.strokeStyle = "rgba(252,211,77,0.15)";
+        ctx.lineWidth = 1;
+        roundRect(ctx, 18, 18, w - 36, h - 36, 6); ctx.stroke();
+
+        // Corner decorations (L-shapes)
+        const cLen = 20, cOff = 14;
+        ctx.strokeStyle = "rgba(252,211,77,0.5)";
+        ctx.lineWidth = 2;
+        // Top-left
+        ctx.beginPath(); ctx.moveTo(cOff, cOff + cLen); ctx.lineTo(cOff, cOff); ctx.lineTo(cOff + cLen, cOff); ctx.stroke();
+        // Top-right
+        ctx.beginPath(); ctx.moveTo(w - cOff - cLen, cOff); ctx.lineTo(w - cOff, cOff); ctx.lineTo(w - cOff, cOff + cLen); ctx.stroke();
+        // Bottom-left
+        ctx.beginPath(); ctx.moveTo(cOff, h - cOff - cLen); ctx.lineTo(cOff, h - cOff); ctx.lineTo(cOff + cLen, h - cOff); ctx.stroke();
+        // Bottom-right
+        ctx.beginPath(); ctx.moveTo(w - cOff - cLen, h - cOff); ctx.lineTo(w - cOff, h - cOff); ctx.lineTo(w - cOff, h - cOff - cLen); ctx.stroke();
+
+        // === HEADER ===
+        ctx.textAlign = "center";
+        ctx.font = `bold 28px ${sans_}`;
+        ctx.fillStyle = "#fcd34d";
+        ctx.save();
+        ctx.shadowColor = "#fcd34d44";
+        ctx.shadowBlur = 12;
+        ctx.fillText("CERTIFICATE OF AUDIT", w / 2, 62);
+        ctx.restore();
+
+        // Subtitle
+        ctx.font = `12px ${mono_}`;
+        ctx.fillStyle = "#4a7a9b";
+        ctx.fillText("Human Protocol Monitor v2.1", w / 2, 82);
+
+        // Divider
+        const divGrad = ctx.createLinearGradient(80, 0, w - 80, 0);
+        divGrad.addColorStop(0, "transparent");
+        divGrad.addColorStop(0.5, "rgba(252,211,77,0.3)");
+        divGrad.addColorStop(1, "transparent");
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(80, 92, w - 160, 1);
+
+        // === BODY TEXT ===
+        ctx.font = `13px ${sans_}`;
+        ctx.fillStyle = "#8ec8e8";
+        ctx.fillText("This certifies that an anonymous on-chain operator was audited on", w / 2, 118);
+        ctx.font = `bold 13px ${sans_}`;
+        ctx.fillStyle = "#dff0ff";
+        ctx.fillText(dateStr + " and received:", w / 2, 136);
+
+        // === GRADE (large, centered, with glow) ===
+        const grGlow = ctx.createRadialGradient(w / 2, 195, 10, w / 2, 195, 70);
+        grGlow.addColorStop(0, gradeCol + "30");
+        grGlow.addColorStop(0.6, gradeCol + "08");
+        grGlow.addColorStop(1, "transparent");
+        ctx.fillStyle = grGlow;
+        ctx.fillRect(w / 2 - 80, 150, 160, 100);
+
+        ctx.font = `bold 72px ${sans_}`;
+        ctx.fillStyle = gradeCol;
+        ctx.textBaseline = "middle";
+        ctx.save();
+        ctx.shadowColor = gradeCol + "66";
+        ctx.shadowBlur = 20;
+        ctx.fillText(data.grade, w / 2, 195);
+        ctx.restore();
+        ctx.textBaseline = "alphabetic";
+
+        // Score
+        ctx.font = `bold 16px ${mono_}`;
+        ctx.fillStyle = "#8ec8e8";
+        ctx.fillText(data.overallScore + " / 100 points", w / 2, 250);
+
+        // Protocol State
+        ctx.font = `bold 18px ${sans_}`;
+        ctx.fillStyle = pCol;
+        ctx.save();
+        ctx.shadowColor = pCol + "44";
+        ctx.shadowBlur = 8;
+        ctx.fillText("Protocol State: " + data.pState, w / 2, 275);
+        ctx.restore();
+
+        // Personality
+        ctx.font = `14px ${sans_}`;
+        ctx.fillStyle = "#e879f9";
+        ctx.fillText(data.personality.emoji + " " + data.personality.type, w / 2, 300);
+
+        // Divider 2
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(80, 315, w - 160, 1);
+
+        // === KEY STATS ROW ===
+        const stats = [
+            { l: "Energy", v: data.energy + "%", c: data.energy >= 70 ? "#4ade80" : data.energy >= 45 ? "#fcd34d" : "#f87171" },
+            { l: "Liq Risk", v: data.liqRisk + "%", c: data.liqRisk <= 30 ? "#4ade80" : data.liqRisk <= 55 ? "#fcd34d" : "#f87171" },
+            { l: "Degen Score", v: data.degenScore + "%", c: data.degenScore <= 30 ? "#4ade80" : data.degenScore <= 55 ? "#fcd34d" : "#f87171" },
+            { l: "Grass Debt", v: data.grassDebt + "m", c: data.grassDebt <= 60 ? "#4ade80" : data.grassDebt <= 180 ? "#fcd34d" : "#f87171" },
+        ];
+        const statW = 120, statGap = 16;
+        const totalStatsW = stats.length * statW + (stats.length - 1) * statGap;
+        const statStartX = (w - totalStatsW) / 2;
+        stats.forEach((s, i) => {
+            const sx = statStartX + i * (statW + statGap);
+            const sy = 332;
+            ctx.fillStyle = "rgba(99,179,237,0.04)";
+            roundRect(ctx, sx, sy, statW, 48, 6); ctx.fill();
+            ctx.strokeStyle = "rgba(99,179,237,0.1)";
+            ctx.lineWidth = 1;
+            roundRect(ctx, sx, sy, statW, 48, 6); ctx.stroke();
+            ctx.font = `9px ${mono_}`;
+            ctx.fillStyle = "#4a7a9b";
+            ctx.textAlign = "center";
+            ctx.fillText(s.l.toUpperCase(), sx + statW / 2, sy + 17);
+            ctx.font = `bold 16px ${mono_}`;
+            ctx.fillStyle = s.c;
+            ctx.fillText(s.v, sx + statW / 2, sy + 38);
+        });
+
+        // === FOOTER ===
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(80, h - 70, w - 160, 1);
+        ctx.textAlign = "center";
+        ctx.font = `10px ${mono_}`;
+        ctx.fillStyle = "#1e3a5f";
+        ctx.fillText("auditmybody.com \u00B7 This is not medical advice \u00B7 Your mitochondria, however, are real", w / 2, h - 48);
+
+        // === SEAL / STAMP (bottom-right) ===
+        const sealX = w - 80, sealY = h - 90, sealR = 36;
+        ctx.beginPath();
+        ctx.arc(sealX, sealY, sealR, 0, Math.PI * 2);
+        ctx.strokeStyle = gradeCol + "66";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(sealX, sealY, sealR - 6, 0, Math.PI * 2);
+        ctx.strokeStyle = gradeCol + "33";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // "AUDITED" text around the circle
+        ctx.font = `bold 9px ${mono_}`;
+        ctx.fillStyle = gradeCol + "aa";
+        ctx.textAlign = "center";
+        ctx.fillText("AUDITED", sealX, sealY - 12);
+        // Grade inside seal
+        ctx.font = `bold 28px ${sans_}`;
+        ctx.fillStyle = gradeCol;
+        ctx.save();
+        ctx.shadowColor = gradeCol + "44";
+        ctx.shadowBlur = 8;
+        ctx.fillText(data.grade, sealX, sealY + 16);
+        ctx.restore();
+
+        // === DOWNLOAD ===
+        canvas.toBlob(blob => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "audit-certificate.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, "image/png");
+    }
 
     const inputStatus = (k) => {
         const v = form[k];
@@ -1372,7 +1722,7 @@ export default function AuditMyBody() {
 
                 {/* ── RESULTS ── */}
                 {view === "results" && data && (
-                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShareX={shareOnX} onGenerateBadge={generateBadge} />
+                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShareX={shareOnX} onGenerateBadge={generateBadge} onGenerateCertificate={generateCertificate} history={history} />
                 )}
             </div>
         </div>
