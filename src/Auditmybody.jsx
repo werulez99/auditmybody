@@ -855,28 +855,31 @@ export default function AuditMyBody() {
         generateBadge();
         // Step 2: open X with tweet text after a short delay (so download starts first)
         setTimeout(() => {
-            const funnyLines = {
+            const msgs = {
                 LIQUIDATED: [
-                    `Just got audited by @AuditMyBody_ and I'm officially LIQUIDATED 💀\n\nGrade: ${data.grade} · ${data.overallScore}pts\nTouch Grass Debt: ${data.grassDebt}min\nExploits running: ${data.exploits.length}\n\nI am the rug pull. My body is the rug.`,
-                    `Protocol status: LIQUIDATED\nGrade: ${data.grade}\n\nMy body just got rugged harder than $LUNA.\n${data.exploits.length} active exploits. ${data.brokenInvs}/6 invariants broken.\n\nI need to touch grass immediately.`,
-                    `🚨 CRITICAL AUDIT ALERT 🚨\n\nGrade: ${data.grade} · Energy: ${data.energy}%\nDegen Score: ${data.degenScore}%\nSunlight Oracle: ${data.sunOracle}\n\nMy mitochondria have filed for bankruptcy.`,
+                    `auditmybody.com said I'm LIQUIDATED 💀 grade ${data.grade}, ${data.exploits.length} exploits running, ${data.grassDebt}min touch grass debt. my body is an unaudited smart contract`,
+                    `just got bodied by auditmybody.com. grade: ${data.grade}. degen score: ${data.degenScore}%. my mitochondria have filed for chapter 11`,
+                    `ran a health audit and got LIQUIDATED 💀 ${data.energy}% energy, ${data.daysOut}d no sunlight, ${data.steps.toLocaleString()} steps. i am the rug pull`,
                 ],
                 CRITICAL: [
-                    `Audited my body. It's in CRITICAL state 🫠\n\nGrade: ${data.grade} · ${data.overallScore}pts\nLiq Risk: ${data.liqRisk}%\nGrass Debt: ${data.grassDebt}min\n\nThis is not a temporary bug. This is a lifestyle.`,
-                    `My body's protocol state: CRITICAL\nGrade: ${data.grade}\n\n${data.exploits.length} exploits running on my health\nCortisol at ${data.cortisol}%\n\nWho needs sunlight when you have monitor glow`,
+                    `ran a security audit on my body. it came back CRITICAL 🫠 grade ${data.grade}. apparently ${data.caffeine || 3} coffees and ${data.sleep}h sleep is not a valid recovery strategy`,
+                    `auditmybody.com gave me a ${data.grade}. degen score ${data.degenScore}%. "this is not a temporary bug, this is a lifestyle" ok damn`,
+                    `my body audit came back CRITICAL 🫠 ${data.exploits.length} exploits active, ${data.grassDebt}min grass debt. i should probably go outside but first let me finish this thread`,
                 ],
                 DEGRADING: [
-                    `Body audit results: DEGRADING 📉\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nGrass Debt: ${data.grassDebt}min\n\nThe market doesn't care about my feelings. Or my posture.`,
-                    `Just ran @AuditMyBody_ and got Grade ${data.grade} 😅\n\nState: DEGRADING\nDegen Score: ${data.degenScore}%\n\nAt least my code compiles. My body doesn't.`,
+                    `my body audit says DEGRADING 📉 grade ${data.grade}, ${data.grassDebt}min touch grass debt, sunlight oracle offline ${data.daysOut}d. i should go outside`,
+                    `auditmybody.com says my body is DEGRADING. grade ${data.grade}. at least my code compiles. my body doesn't`,
+                    `body audit: grade ${data.grade} 😅 ${data.sitting}h sitting, ${data.energy}% energy. the mass adoption we need is touching grass`,
                 ],
                 OPTIMAL: [
-                    `Body audit: OPTIMAL ✅\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nProof of Walk: VERIFIED\n\nI touch grass AND ship code. Rare combo apparently.`,
-                    `Just aced my @AuditMyBody_ audit 💪\n\nGrade: ${data.grade} · State: OPTIMAL\n0 active exploits\nSunlight Oracle: ONLINE\n\nNo bugs found in this body. Unlike my smart contracts.`,
+                    `body audit: OPTIMAL ✅ grade ${data.grade}, 0 exploits, proof of walk VERIFIED. i touch grass AND ship code. no known vulnerabilities`,
+                    `auditmybody.com couldn't find a single exploit on me 💪 grade ${data.grade}, ${data.energy}% energy, degen score only ${data.degenScore}%. fully audited protocol`,
+                    `just passed my body audit with grade ${data.grade} ✅ energy ${data.energy}%, 0 exploits. rare W. don't get complacent tho`,
                 ],
             };
-            const lines = funnyLines[data.pState] || funnyLines.DEGRADING;
-            const msg = lines[Math.floor(Math.random() * lines.length)];
-            const text = msg + "\n\nAudit yours 👇\nhttps://auditmybody.com";
+            const pool = msgs[data.pState] || msgs.DEGRADING;
+            const msg = pool[Math.floor(Math.random() * pool.length)];
+            const text = msg + "\n\naudit yours 👇\nhttps://auditmybody.com";
             window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
         }, 500);
     }
