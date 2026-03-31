@@ -851,29 +851,34 @@ export default function AuditMyBody() {
 
     function shareOnX() {
         if (!data) return;
-        const funnyLines = {
-            LIQUIDATED: [
-                `Just got audited by @AuditMyBody_ and I'm officially LIQUIDATED 💀\n\nGrade: ${data.grade} · ${data.overallScore}pts\nTouch Grass Debt: ${data.grassDebt}min\nExploits running: ${data.exploits.length}\n\nI am the rug pull. My body is the rug.`,
-                `Protocol status: LIQUIDATED\nGrade: ${data.grade}\n\nMy body just got rugged harder than $LUNA.\n${data.exploits.length} active exploits. ${data.brokenInvs}/6 invariants broken.\nProof of Walk: ${data.pow.replace(/_/g, " ")}\n\nI need to touch grass immediately.`,
-                `🚨 CRITICAL AUDIT ALERT 🚨\n\nGrade: ${data.grade} · Energy: ${data.energy}%\nDegen Score: ${data.degenScore}%\nSunlight Oracle: ${data.sunOracle}\n\nMy mitochondria have filed for bankruptcy.`,
-            ],
-            CRITICAL: [
-                `Audited my body. It's in CRITICAL state 🫠\n\nGrade: ${data.grade} · ${data.overallScore}pts\nLiq Risk: ${data.liqRisk}%\nGrass Debt: ${data.grassDebt}min\n\nThis is not a temporary bug. This is a lifestyle.`,
-                `My body's protocol state: CRITICAL\nGrade: ${data.grade}\n\n${data.exploits.length} exploits running on my health\nCortisol at ${data.cortisol}%\nProof of Walk: NOT SUBMITTED\n\nWho needs sunlight when you have monitor glow`,
-            ],
-            DEGRADING: [
-                `Body audit results: DEGRADING 📉\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nGrass Debt: ${data.grassDebt}min\nCope Index: ${data.copeIndex}%\n\nThe market doesn't care about my feelings. Or my posture.`,
-                `Just ran @AuditMyBody_ and got Grade ${data.grade} 😅\n\nState: DEGRADING\nDegen Score: ${data.degenScore}%\nSocial Layer: ${data.socialLayer.replace(/_/g, " ")}\n\nAt least my code compiles. My body doesn't.`,
-            ],
-            OPTIMAL: [
-                `Body audit: OPTIMAL ✅\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nGrass Debt: ${data.grassDebt}min\nProof of Walk: VERIFIED\n\nI touch grass AND ship code. Rare combo apparently.`,
-                `Just aced my @AuditMyBody_ audit 💪\n\nGrade: ${data.grade} · State: OPTIMAL\n0 active exploits\nSunlight Oracle: ONLINE\nDegen Score: ${data.degenScore}%\n\nNo bugs found in this body. Unlike my smart contracts.`,
-            ],
-        };
-        const lines = funnyLines[data.pState] || funnyLines.DEGRADING;
-        const msg = lines[Math.floor(Math.random() * lines.length)];
-        const text = msg + "\n\nAudit yours 👇\nhttps://auditmybody.com";
-        window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
+        // Step 1: auto-download the badge
+        generateBadge();
+        // Step 2: open X with tweet text after a short delay (so download starts first)
+        setTimeout(() => {
+            const funnyLines = {
+                LIQUIDATED: [
+                    `Just got audited by @AuditMyBody_ and I'm officially LIQUIDATED 💀\n\nGrade: ${data.grade} · ${data.overallScore}pts\nTouch Grass Debt: ${data.grassDebt}min\nExploits running: ${data.exploits.length}\n\nI am the rug pull. My body is the rug.`,
+                    `Protocol status: LIQUIDATED\nGrade: ${data.grade}\n\nMy body just got rugged harder than $LUNA.\n${data.exploits.length} active exploits. ${data.brokenInvs}/6 invariants broken.\n\nI need to touch grass immediately.`,
+                    `🚨 CRITICAL AUDIT ALERT 🚨\n\nGrade: ${data.grade} · Energy: ${data.energy}%\nDegen Score: ${data.degenScore}%\nSunlight Oracle: ${data.sunOracle}\n\nMy mitochondria have filed for bankruptcy.`,
+                ],
+                CRITICAL: [
+                    `Audited my body. It's in CRITICAL state 🫠\n\nGrade: ${data.grade} · ${data.overallScore}pts\nLiq Risk: ${data.liqRisk}%\nGrass Debt: ${data.grassDebt}min\n\nThis is not a temporary bug. This is a lifestyle.`,
+                    `My body's protocol state: CRITICAL\nGrade: ${data.grade}\n\n${data.exploits.length} exploits running on my health\nCortisol at ${data.cortisol}%\n\nWho needs sunlight when you have monitor glow`,
+                ],
+                DEGRADING: [
+                    `Body audit results: DEGRADING 📉\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nGrass Debt: ${data.grassDebt}min\n\nThe market doesn't care about my feelings. Or my posture.`,
+                    `Just ran @AuditMyBody_ and got Grade ${data.grade} 😅\n\nState: DEGRADING\nDegen Score: ${data.degenScore}%\n\nAt least my code compiles. My body doesn't.`,
+                ],
+                OPTIMAL: [
+                    `Body audit: OPTIMAL ✅\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nProof of Walk: VERIFIED\n\nI touch grass AND ship code. Rare combo apparently.`,
+                    `Just aced my @AuditMyBody_ audit 💪\n\nGrade: ${data.grade} · State: OPTIMAL\n0 active exploits\nSunlight Oracle: ONLINE\n\nNo bugs found in this body. Unlike my smart contracts.`,
+                ],
+            };
+            const lines = funnyLines[data.pState] || funnyLines.DEGRADING;
+            const msg = lines[Math.floor(Math.random() * lines.length)];
+            const text = msg + "\n\n📎 Badge attached below 👇\nAudit yours at https://auditmybody.com";
+            window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
+        }, 500);
     }
 
     function generateBadge() {
