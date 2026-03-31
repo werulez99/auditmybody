@@ -946,6 +946,24 @@ function Results({ d, onReset, onShareX, onGenerateBadge, onGenerateCertificate,
                 )}
             </div>
 
+            {/* ── CTA ── */}
+            <div style={{
+                background: "linear-gradient(135deg, rgba(96,165,250,0.06) 0%, rgba(74,222,128,0.06) 100%)",
+                border: `1px solid ${C.green}33`, borderRadius: 12, padding: "24px", marginBottom: 12,
+                textAlign: "center"
+            }}>
+                <div style={{ fontFamily: mono, fontSize: 12, color: C.muted, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8 }}>Body audit complete</div>
+                <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 700, color: C.bright, marginBottom: 6 }}>Done auditing your body?</div>
+                <div style={{ fontFamily: sans, fontSize: 14, color: C.text, marginBottom: 16 }}>Now audit your codebase. We find the bugs you ship at 3am.</div>
+                <a href="https://valvessecurity.com" target="_blank" rel="noreferrer" style={{
+                    display: "inline-block", padding: "12px 28px", borderRadius: 8,
+                    background: "linear-gradient(135deg, rgba(74,222,128,0.15) 0%, rgba(96,165,250,0.15) 100%)",
+                    border: `1px solid ${C.green}55`, fontFamily: mono, fontSize: 13,
+                    color: C.green, textDecoration: "none", letterSpacing: "1.5px", textTransform: "uppercase",
+                    fontWeight: 700, transition: "all .2s"
+                }}>🔒 Audit Your Code → valvessecurity.com</a>
+            </div>
+
             <div style={{ padding: "14px 0", borderTop: `1px solid ${C.border}`, textAlign: "center" }}>
                 <div style={{ fontFamily: mono, fontSize: 14, color: C.dim, marginBottom: 4 }}>auditmybody.com · Not a medical device · No data stored · References are real</div>
                 <div style={{ fontFamily: mono, fontSize: 14, color: C.dim }}>
@@ -1781,7 +1799,7 @@ export default function AuditMyBody() {
                                     ? Math.round(history.reduce((sum, h) => sum + h.overallScore, 0) / history.length)
                                     : null;
                                 return [
-                                    { emoji: "🌿", label: "Your Avg Grade", val: avgGrade || "?", sub: avgGrade ? `${avgScore}pts avg · ${history.length} audit${history.length !== 1 ? "s" : ""}` : "no audits yet" },
+                                    { emoji: "🌿", label: "My Avg Grade", val: avgGrade || "?", sub: avgGrade ? `${avgScore}pts avg · ${history.length} audit${history.length !== 1 ? "s" : ""}` : "no audits yet" },
                                     { emoji: "☀️", label: "Sunlight Oracle", val: "OFFLINE", sub: "you know who you are" },
                                     { emoji: "💀", label: "Liquidated Protocols", val: "many", sub: "this is a free tool" },
                                 ];
