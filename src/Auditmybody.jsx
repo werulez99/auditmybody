@@ -340,7 +340,7 @@ function Chips({ label, value, onChange, options }) {
 }
 
 /* ─── SHARE CARD ──────────────────────────────────────────────── */
-function ShareCard({ d, onCopy, copied }) {
+function ShareCard({ d, onCopy, copied, onGenerateBadge }) {
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
     const gradeCol = GRADE_COL[d.grade] || C.red;
     const quote = d.pState === "LIQUIDATED" ? "Protocol sunset imminent. You are the rug." :
@@ -372,13 +372,22 @@ function ShareCard({ d, onCopy, copied }) {
                             </div>
                         </div>
                     </div>
-                    <button onClick={onCopy} style={{
-                        background: copied ? "rgba(74,222,128,0.15)" : "rgba(99,179,237,0.08)",
-                        border: `1px solid ${copied ? C.green + "66" : C.border}`,
-                        borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
-                        color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px",
-                        textTransform: "uppercase", transition: "all .2s"
-                    }}>{copied ? "✓ COPIED" : "📋 COPY"}</button>
+                    <div style={{ display: "flex", gap: 8 }}>
+                        <button onClick={onCopy} style={{
+                            background: copied ? "rgba(74,222,128,0.15)" : "rgba(99,179,237,0.08)",
+                            border: `1px solid ${copied ? C.green + "66" : C.border}`,
+                            borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
+                            color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px",
+                            textTransform: "uppercase", transition: "all .2s"
+                        }}>{copied ? "✓ COPIED" : "📋 COPY"}</button>
+                        <button onClick={onGenerateBadge} style={{
+                            background: "linear-gradient(135deg, rgba(232,121,249,0.12) 0%, rgba(96,165,250,0.12) 100%)",
+                            border: `1px solid ${C.purple}55`,
+                            borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
+                            color: C.purple, cursor: "pointer", letterSpacing: "1px",
+                            textTransform: "uppercase", transition: "all .2s"
+                        }}>🎨 GENERATE BADGE</button>
+                    </div>
                 </div>
 
                 {/* Grade ring + key stats */}
@@ -688,7 +697,7 @@ function Results({ d, onReset, onShare, copied, onGenerateBadge }) {
             )}
 
             {/* ── SHARE CARD ── */}
-            <ShareCard d={d} onCopy={onShare} copied={copied} />
+            <ShareCard d={d} onCopy={onShare} copied={copied} onGenerateBadge={onGenerateBadge} />
 
             {/* ── DIAGNOSTIC ── */}
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "20px", position: "relative", marginBottom: 12 }}>
@@ -873,7 +882,7 @@ export default function AuditMyBody() {
 
     function generateBadge() {
         if (!data) return;
-        const w = 700, h = 620;
+        const w = 500, h = 700;
         const canvas = badgeCanvasRef.current || document.createElement("canvas");
         badgeCanvasRef.current = canvas;
         canvas.width = w;
@@ -881,241 +890,282 @@ export default function AuditMyBody() {
         const ctx = canvas.getContext("2d");
         const pCol = data.pState === "OPTIMAL" ? "#4ade80" : data.pState === "DEGRADING" ? "#fcd34d" : data.pState === "CRITICAL" ? "#f87171" : "#e879f9";
         const gradeCol = GRADE_COL[data.grade] || "#f87171";
+        const mono_ = "'Courier New', monospace";
+        const sans_ = "system-ui, sans-serif";
 
-        // Background with subtle gradient
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-        bgGrad.addColorStop(0, "#060d1a");
-        bgGrad.addColorStop(1, "#03080f");
+        // === BACKGROUND: deep space gradient ===
+        const bgGrad = ctx.createRadialGradient(w / 2, 200, 50, w / 2, 200, 400);
+        bgGrad.addColorStop(0, "#0c1628");
+        bgGrad.addColorStop(0.5, "#060d1a");
+        bgGrad.addColorStop(1, "#020408");
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Subtle grid pattern
-        ctx.strokeStyle = "rgba(96,165,250,0.04)";
-        ctx.lineWidth = 1;
-        for (let x = 0; x < w; x += 35) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-        for (let y = 0; y < h; y += 35) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+        // === PARTICLE STARS ===
+        const seed = data.overallScore * 7 + data.energy * 3;
+        for (let i = 0; i < 60; i++) {
+            const px = ((seed * (i + 1) * 17) % w);
+            const py = ((seed * (i + 1) * 31) % h);
+            const ps = ((seed * (i + 1) * 7) % 20) / 20 * 1.5 + 0.3;
+            const po = ((seed * (i + 1) * 13) % 100) / 100 * 0.4 + 0.05;
+            ctx.beginPath();
+            ctx.arc(px, py, ps, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(96,165,250,${po})`;
+            ctx.fill();
+        }
 
-        // Border
-        ctx.strokeStyle = "rgba(99,179,237,0.2)";
+        // === OUTER BORDER: double border with glow ===
+        ctx.save();
+        ctx.shadowColor = pCol + "44";
+        ctx.shadowBlur = 20;
+        ctx.strokeStyle = pCol + "55";
+        ctx.lineWidth = 2;
+        roundRect(ctx, 8, 8, w - 16, h - 16, 20);
+        ctx.stroke();
+        ctx.restore();
+        ctx.strokeStyle = "rgba(99,179,237,0.12)";
         ctx.lineWidth = 1;
-        roundRect(ctx, 0.5, 0.5, w - 1, h - 1, 16);
+        roundRect(ctx, 14, 14, w - 28, h - 28, 16);
         ctx.stroke();
 
-        // Top accent bar (gradient)
-        const topGrad = ctx.createLinearGradient(0, 0, w, 0);
-        topGrad.addColorStop(0, pCol);
-        topGrad.addColorStop(0.5, gradeCol);
+        // === TOP ACCENT STRIP ===
+        const topGrad = ctx.createLinearGradient(20, 0, w - 20, 0);
+        topGrad.addColorStop(0, "transparent");
+        topGrad.addColorStop(0.3, pCol);
+        topGrad.addColorStop(0.7, gradeCol);
         topGrad.addColorStop(1, "transparent");
         ctx.fillStyle = topGrad;
-        ctx.fillRect(0, 0, w, 4);
+        ctx.fillRect(20, 14, w - 40, 3);
 
-        // Glow behind grade
-        const glowGrad = ctx.createRadialGradient(120, 160, 10, 120, 160, 120);
-        glowGrad.addColorStop(0, gradeCol + "25");
-        glowGrad.addColorStop(1, "transparent");
-        ctx.fillStyle = glowGrad;
-        ctx.fillRect(0, 40, 240, 240);
-
-        // Header row
-        ctx.font = "bold 13px 'Courier New', monospace";
+        // === HEADER ===
+        ctx.font = `bold 11px ${mono_}`;
         ctx.fillStyle = "#4ade80";
         ctx.textAlign = "left";
-        ctx.fillText("🔬 AUDIT MY BODY", 28, 34);
-        ctx.font = "11px 'Courier New', monospace";
+        ctx.fillText("AUDIT MY BODY", 32, 42);
+        ctx.font = `10px ${mono_}`;
         ctx.fillStyle = "#1e3a5f";
         ctx.textAlign = "right";
-        ctx.fillText("Human Protocol Monitor v2.1", w - 28, 34);
+        ctx.fillText("#" + String(Math.abs(data.overallScore * 137 + data.energy * 41) % 9999).padStart(4, "0"), w - 32, 42);
 
-        // Separator under header
-        ctx.strokeStyle = "rgba(99,179,237,0.12)";
-        ctx.beginPath(); ctx.moveTo(28, 48); ctx.lineTo(w - 28, 48); ctx.stroke();
+        // === GIANT GRADE SECTION ===
+        // Glow
+        const grGlow = ctx.createRadialGradient(w / 2, 140, 20, w / 2, 140, 110);
+        grGlow.addColorStop(0, gradeCol + "30");
+        grGlow.addColorStop(0.6, gradeCol + "08");
+        grGlow.addColorStop(1, "transparent");
+        ctx.fillStyle = grGlow;
+        ctx.fillRect(0, 50, w, 200);
 
-        // === LEFT: Grade circle ===
-        // Circle background
+        // Score ring background
         ctx.beginPath();
-        ctx.arc(120, 155, 70, 0, Math.PI * 2);
-        ctx.fillStyle = gradeCol + "12";
-        ctx.fill();
-        ctx.strokeStyle = gradeCol + "55";
-        ctx.lineWidth = 2;
+        ctx.arc(w / 2, 140, 72, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(99,179,237,0.08)";
+        ctx.lineWidth = 6;
         ctx.stroke();
 
-        // Grade arc (score-based, out of 100)
+        // Score ring progress
         const startAngle = -Math.PI / 2;
         const endAngle = startAngle + (data.overallScore / 100) * Math.PI * 2;
         ctx.beginPath();
-        ctx.arc(120, 155, 70, startAngle, endAngle);
+        ctx.arc(w / 2, 140, 72, startAngle, endAngle);
         ctx.strokeStyle = gradeCol;
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 6;
         ctx.lineCap = "round";
+        ctx.save();
+        ctx.shadowColor = gradeCol;
+        ctx.shadowBlur = 12;
         ctx.stroke();
+        ctx.restore();
         ctx.lineCap = "butt";
 
         // Grade letter
-        ctx.font = "bold 80px system-ui, sans-serif";
+        ctx.font = `bold 72px ${sans_}`;
         ctx.fillStyle = gradeCol;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(data.grade, 120, 150);
+        ctx.save();
+        ctx.shadowColor = gradeCol + "66";
+        ctx.shadowBlur = 20;
+        ctx.fillText(data.grade, w / 2, 137);
+        ctx.restore();
         ctx.textBaseline = "alphabetic";
 
-        // Score under circle
-        ctx.font = "bold 16px 'Courier New', monospace";
+        // Score text
+        ctx.font = `bold 14px ${mono_}`;
         ctx.fillStyle = "#8ec8e8";
-        ctx.fillText(data.overallScore + " / 100", 120, 245);
+        ctx.fillText(data.overallScore + " / 100", w / 2, 230);
 
-        // === RIGHT: State + key info ===
-        ctx.textAlign = "left";
-        ctx.font = "11px 'Courier New', monospace";
-        ctx.fillStyle = "#4a7a9b";
-        ctx.fillText("PROTOCOL STATE", 260, 75);
-        ctx.font = "bold 28px system-ui, sans-serif";
+        // Protocol state
+        ctx.font = `bold 24px ${sans_}`;
         ctx.fillStyle = pCol;
-        ctx.fillText(data.pState, 260, 108);
+        ctx.save();
+        ctx.shadowColor = pCol + "44";
+        ctx.shadowBlur = 10;
+        ctx.fillText(data.pState, w / 2, 260);
+        ctx.restore();
 
-        // Status indicators
-        const indicators = [
-            { l: "Sunlight Oracle", v: data.sunOracle, c: data.daysOut === 0 ? "#4ade80" : data.daysOut <= 2 ? "#fcd34d" : "#f87171" },
-            { l: "Social Layer", v: data.socialLayer.replace(/_/g, " "), c: data.social >= 2 ? "#4ade80" : data.social >= 1 ? "#fcd34d" : "#f87171" },
-            { l: "Proof of Walk", v: data.pow.replace(/_/g, " "), c: data.pow === "VERIFIED" ? "#4ade80" : data.pow === "WEAK_PROOF" ? "#fcd34d" : "#f87171" },
-            { l: "Mental State", v: data.mental.label, c: data.mental.col },
-        ];
-        let iy = 138;
-        indicators.forEach(ind => {
-            ctx.font = "11px 'Courier New', monospace";
-            ctx.fillStyle = "#4a7a9b";
-            ctx.fillText(ind.l, 260, iy);
-            // Dot
-            ctx.beginPath();
-            ctx.arc(420, iy - 4, 4, 0, Math.PI * 2);
-            ctx.fillStyle = ind.c;
-            ctx.fill();
-            ctx.font = "bold 12px 'Courier New', monospace";
-            ctx.fillStyle = ind.c;
-            ctx.fillText(ind.v, 432, iy);
-            iy += 28;
-        });
+        // === DIVIDER ===
+        const divGrad = ctx.createLinearGradient(32, 0, w - 32, 0);
+        divGrad.addColorStop(0, "transparent");
+        divGrad.addColorStop(0.5, "rgba(99,179,237,0.2)");
+        divGrad.addColorStop(1, "transparent");
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(32, 278, w - 64, 1);
 
-        // === METRICS GRID (2 rows x 4 cols) ===
-        ctx.strokeStyle = "rgba(99,179,237,0.1)";
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(28, 275); ctx.lineTo(w - 28, 275); ctx.stroke();
-
-        const metricsRow1 = [
+        // === METRICS GRID: 2x4 ===
+        const metricsAll = [
             { l: "ENERGY", v: data.energy + "%", c: data.energy >= 70 ? "#4ade80" : data.energy >= 45 ? "#fcd34d" : "#f87171" },
             { l: "LIQ RISK", v: data.liqRisk + "%", c: data.liqRisk <= 30 ? "#4ade80" : data.liqRisk <= 55 ? "#fcd34d" : "#f87171" },
             { l: "BURNOUT", v: data.burnout + "%", c: data.burnout <= 30 ? "#4ade80" : data.burnout <= 55 ? "#fcd34d" : "#f87171" },
-            { l: "CORTISOL", v: data.cortisol + "%", c: data.cortisol <= 30 ? "#4ade80" : data.cortisol <= 55 ? "#fcd34d" : "#f87171" },
-        ];
-        const metricsRow2 = [
-            { l: "GRASS DEBT", v: data.grassDebt + "m", c: data.grassDebt <= 60 ? "#4ade80" : data.grassDebt <= 180 ? "#fcd34d" : "#f87171" },
-            { l: "DEGEN SCORE", v: data.degenScore + "%", c: data.degenScore <= 30 ? "#4ade80" : data.degenScore <= 55 ? "#fcd34d" : "#f87171" },
             { l: "COG ALPHA", v: data.cogAlpha + "%", c: data.cogAlpha >= 70 ? "#4ade80" : data.cogAlpha >= 45 ? "#fcd34d" : "#f87171" },
-            { l: "REVERT RISK", v: data.revert + "%", c: data.revert <= 30 ? "#4ade80" : data.revert <= 55 ? "#fcd34d" : "#f87171" },
+            { l: "GRASS DEBT", v: data.grassDebt + "m", c: data.grassDebt <= 60 ? "#4ade80" : data.grassDebt <= 180 ? "#fcd34d" : "#f87171" },
+            { l: "DEGEN", v: data.degenScore + "%", c: data.degenScore <= 30 ? "#4ade80" : data.degenScore <= 55 ? "#fcd34d" : "#f87171" },
+            { l: "CORTISOL", v: data.cortisol + "%", c: data.cortisol <= 30 ? "#4ade80" : data.cortisol <= 55 ? "#fcd34d" : "#f87171" },
+            { l: "REVERT", v: data.revert + "%", c: data.revert <= 30 ? "#4ade80" : data.revert <= 55 ? "#fcd34d" : "#f87171" },
         ];
-
-        const drawMetricRow = (metrics, baseY) => {
-            const colW = (w - 56) / 4;
-            metrics.forEach((m, i) => {
-                const mx = 28 + i * colW + colW / 2;
-                ctx.font = "10px 'Courier New', monospace";
-                ctx.fillStyle = "#4a7a9b";
-                ctx.textAlign = "center";
-                ctx.fillText(m.l, mx, baseY);
-                ctx.font = "bold 20px 'Courier New', monospace";
-                ctx.fillStyle = m.c;
-                ctx.fillText(m.v, mx, baseY + 24);
-                // Small bar under value
-                const barW = 50;
-                const barX = mx - barW / 2;
-                ctx.fillStyle = "rgba(99,179,237,0.08)";
-                roundRect(ctx, barX, baseY + 30, barW, 4, 2); ctx.fill();
-                const fillW = barW * Math.min(1, (m.l.includes("RISK") || m.l.includes("BURNOUT") || m.l.includes("CORTISOL") || m.l.includes("DEGEN") || m.l.includes("REVERT") || m.l.includes("DEBT") ? (100 - parseInt(m.v)) : parseInt(m.v)) / 100);
-                ctx.fillStyle = m.c + "88";
-                roundRect(ctx, barX, baseY + 30, Math.max(2, fillW), 4, 2); ctx.fill();
-            });
-        };
-        drawMetricRow(metricsRow1, 300);
-        drawMetricRow(metricsRow2, 375);
-
-        // === BOTTOM: Invariants + Exploits + Findings ===
-        ctx.strokeStyle = "rgba(99,179,237,0.1)";
-        ctx.beginPath(); ctx.moveTo(28, 420); ctx.lineTo(w - 28, 420); ctx.stroke();
-
-        // Invariant icons row
-        ctx.font = "11px 'Courier New', monospace";
-        ctx.fillStyle = "#4a7a9b";
-        ctx.textAlign = "left";
-        ctx.fillText("INVARIANTS", 28, 448);
-        data.invariants.forEach((inv, i) => {
-            const ix = 130 + i * 28;
-            ctx.font = "16px system-ui, sans-serif";
-            ctx.fillText(inv.ok ? "✅" : "❌", ix, 449);
+        const cols = 4, mPad = 32, mGap = 6;
+        const cellW = (w - mPad * 2 - mGap * (cols - 1)) / cols;
+        metricsAll.forEach((m, i) => {
+            const col = i % cols, row = Math.floor(i / cols);
+            const mx = mPad + col * (cellW + mGap);
+            const my = 298 + row * 62;
+            // Cell bg
+            ctx.fillStyle = "rgba(99,179,237,0.04)";
+            roundRect(ctx, mx, my, cellW, 52, 6); ctx.fill();
+            ctx.strokeStyle = "rgba(99,179,237,0.08)";
+            ctx.lineWidth = 1;
+            roundRect(ctx, mx, my, cellW, 52, 6); ctx.stroke();
+            // Label
+            ctx.font = `9px ${mono_}`;
+            ctx.fillStyle = "#4a7a9b";
+            ctx.textAlign = "center";
+            ctx.fillText(m.l, mx + cellW / 2, my + 18);
+            // Value
+            ctx.font = `bold 16px ${mono_}`;
+            ctx.fillStyle = m.c;
+            ctx.fillText(m.v, mx + cellW / 2, my + 40);
         });
 
-        // Exploit count + Finding count
-        ctx.font = "11px 'Courier New', monospace";
+        // === STATUS INDICATORS ===
+        const statusY = 440;
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(32, statusY - 8, w - 64, 1);
+
+        const statuses = [
+            { icon: "☀", l: "SUN", v: data.daysOut === 0 ? "ON" : data.daysOut + "d OFF", c: data.daysOut === 0 ? "#4ade80" : "#f87171" },
+            { icon: "🚶", l: "WALK", v: data.pow === "VERIFIED" ? "✓" : "✗", c: data.pow === "VERIFIED" ? "#4ade80" : "#f87171" },
+            { icon: "🧠", l: "MIND", v: data.mental.label.slice(0, 5), c: data.mental.col },
+            { icon: "🤝", l: "SOCIAL", v: data.social >= 2 ? "ON" : data.social >= 1 ? "LOW" : "OFF", c: data.social >= 2 ? "#4ade80" : data.social >= 1 ? "#fcd34d" : "#f87171" },
+        ];
+        const sW = (w - 64 - 18) / 4;
+        statuses.forEach((s, i) => {
+            const sx = 32 + i * (sW + 6);
+            ctx.fillStyle = s.c + "12";
+            roundRect(ctx, sx, statusY + 4, sW, 38, 6); ctx.fill();
+            ctx.strokeStyle = s.c + "33";
+            ctx.lineWidth = 1;
+            roundRect(ctx, sx, statusY + 4, sW, 38, 6); ctx.stroke();
+            ctx.font = `13px ${sans_}`;
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#fff";
+            ctx.fillText(s.icon, sx + sW / 2, statusY + 21);
+            ctx.font = `bold 10px ${mono_}`;
+            ctx.fillStyle = s.c;
+            ctx.fillText(s.v, sx + sW / 2, statusY + 36);
+        });
+
+        // === INVARIANTS ROW ===
+        const invY = 498;
+        ctx.font = `10px ${mono_}`;
         ctx.fillStyle = "#4a7a9b";
         ctx.textAlign = "left";
-        ctx.fillText("EXPLOITS", 400, 448);
-        ctx.font = "bold 14px 'Courier New', monospace";
-        ctx.fillStyle = data.exploits.length > 0 ? "#f87171" : "#4ade80";
-        ctx.fillText(data.exploits.length + " active", 480, 448);
+        ctx.fillText("INVARIANTS", 32, invY);
+        const invStartX = 130;
+        data.invariants.forEach((inv, i) => {
+            const ix = invStartX + i * 26;
+            ctx.beginPath();
+            ctx.arc(ix + 8, invY - 4, 9, 0, Math.PI * 2);
+            ctx.fillStyle = inv.ok ? "rgba(74,222,128,0.15)" : "rgba(248,113,113,0.15)";
+            ctx.fill();
+            ctx.strokeStyle = inv.ok ? "#4ade80" + "55" : "#f87171" + "55";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.font = `bold 10px ${sans_}`;
+            ctx.fillStyle = inv.ok ? "#4ade80" : "#f87171";
+            ctx.textAlign = "center";
+            ctx.fillText(inv.ok ? "✓" : "✗", ix + 8, invY - 1);
+            ctx.textAlign = "left";
+        });
 
-        ctx.font = "11px 'Courier New', monospace";
-        ctx.fillStyle = "#4a7a9b";
-        ctx.fillText("FINDINGS", 400, 472);
-        ctx.font = "bold 14px 'Courier New', monospace";
-        ctx.fillStyle = data.findings.length > 3 ? "#f87171" : data.findings.length > 0 ? "#fcd34d" : "#4ade80";
-        ctx.fillText(data.findings.length + " total", 480, 472);
-
-        // Findings severity breakdown
+        // Severity badges
         const sevCounts = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 };
         data.findings.forEach(f => { if (sevCounts[f.sev] !== undefined) sevCounts[f.sev]++; });
-        ctx.font = "11px 'Courier New', monospace";
-        ctx.textAlign = "left";
-        let sx = 28;
+        const sevY = 520;
+        ctx.font = `10px ${mono_}`;
         ctx.fillStyle = "#4a7a9b";
-        ctx.fillText("SEVERITY", sx, 495);
-        sx = 130;
+        ctx.fillText("FINDINGS", 32, sevY);
+        let bx = 130;
         Object.entries(sevCounts).forEach(([sev, count]) => {
-            ctx.fillStyle = SEV[sev] + "44";
-            roundRect(ctx, sx, 482, 60, 20, 4); ctx.fill();
+            ctx.fillStyle = SEV[sev] + "22";
+            roundRect(ctx, bx, sevY - 12, 52, 18, 4); ctx.fill();
+            ctx.strokeStyle = SEV[sev] + "44";
+            ctx.lineWidth = 1;
+            roundRect(ctx, bx, sevY - 12, 52, 18, 4); ctx.stroke();
+            ctx.font = `bold 9px ${mono_}`;
             ctx.fillStyle = SEV[sev];
-            ctx.font = "bold 10px 'Courier New', monospace";
             ctx.textAlign = "center";
-            ctx.fillText(count + " " + sev.slice(0, 4), sx + 30, 496);
+            ctx.fillText(count + " " + sev.slice(0, 4), bx + 26, sevY - 1);
             ctx.textAlign = "left";
-            sx += 68;
+            bx += 58;
         });
 
-        // === TOP EXPLOITS LIST (if any) ===
+        // === ACTIVE EXPLOITS ===
         if (data.exploits.length > 0) {
-            ctx.strokeStyle = "rgba(99,179,237,0.1)";
-            ctx.beginPath(); ctx.moveTo(28, 515); ctx.lineTo(w - 28, 515); ctx.stroke();
-            ctx.font = "11px 'Courier New', monospace";
-            ctx.fillStyle = "#4a7a9b";
-            ctx.fillText("ACTIVE EXPLOITS", 28, 538);
-            const topExploits = data.exploits.slice(0, 3);
-            topExploits.forEach((ex, i) => {
-                const ey = 538 + (i + 1) * 20;
-                ctx.font = "bold 10px 'Courier New', monospace";
+            const exY = 550;
+            ctx.fillStyle = divGrad;
+            ctx.fillRect(32, exY - 6, w - 64, 1);
+            ctx.font = `10px ${mono_}`;
+            ctx.fillStyle = "#f87171";
+            ctx.fillText("⚠ ACTIVE EXPLOITS", 32, exY + 14);
+            data.exploits.slice(0, 3).forEach((ex, i) => {
+                const ey = exY + 14 + (i + 1) * 20;
+                ctx.font = `bold 9px ${mono_}`;
                 ctx.fillStyle = SEV[ex.sev];
-                ctx.fillText("[" + ex.sev + "]", 28, ey);
-                ctx.font = "12px 'Courier New', monospace";
+                ctx.fillText("[" + ex.sev.slice(0, 4) + "]", 40, ey);
+                ctx.font = `11px ${mono_}`;
                 ctx.fillStyle = "#8ec8e8";
-                const exName = ex.name.length > 45 ? ex.name.slice(0, 42) + "..." : ex.name;
-                ctx.fillText(exName, 110, ey);
+                const exName = ex.name.length > 38 ? ex.name.slice(0, 35) + "..." : ex.name;
+                ctx.fillText(exName, 100, ey);
             });
         }
 
-        // === FOOTER ===
-        ctx.strokeStyle = "rgba(99,179,237,0.08)";
-        ctx.beginPath(); ctx.moveTo(28, h - 40); ctx.lineTo(w - 28, h - 40); ctx.stroke();
-        ctx.font = "11px 'Courier New', monospace";
-        ctx.fillStyle = "#1e3a5f";
+        // === QUOTE ===
+        const quote = data.pState === "LIQUIDATED" ? "You are the rug pull." :
+            data.pState === "CRITICAL" ? "This is not a temporary bug." :
+                data.pState === "DEGRADING" ? "Touch grass. Not financial advice." :
+                    "Rare W. Don't get complacent.";
+        ctx.font = `italic 12px ${sans_}`;
+        ctx.fillStyle = pCol + "aa";
         ctx.textAlign = "center";
-        ctx.fillText("auditmybody.com \u00B7 @Merulez99 \u00B7 No blockchain calls. Your mitochondria are real.", w / 2, h - 18);
+        ctx.fillText('"' + quote + '"', w / 2, h - 58);
+
+        // === FOOTER ===
+        ctx.fillStyle = divGrad;
+        ctx.fillRect(32, h - 44, w - 64, 1);
+        ctx.font = `10px ${mono_}`;
+        ctx.fillStyle = "#1e3a5f";
+        ctx.fillText("auditmybody.com", w / 2 - 60, h - 24);
+        ctx.fillStyle = "#4a7a9b";
+        ctx.fillText("@Merulez99", w / 2 + 50, h - 24);
+
+        // === BOTTOM ACCENT STRIP ===
+        const botGrad = ctx.createLinearGradient(20, 0, w - 20, 0);
+        botGrad.addColorStop(0, "transparent");
+        botGrad.addColorStop(0.3, gradeCol + "44");
+        botGrad.addColorStop(0.7, pCol + "44");
+        botGrad.addColorStop(1, "transparent");
+        ctx.fillStyle = botGrad;
+        ctx.fillRect(20, h - 17, w - 40, 3);
 
         canvas.toBlob(blob => {
             if (!blob) return;
