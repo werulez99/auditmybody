@@ -857,24 +857,24 @@ export default function AuditMyBody() {
         setTimeout(() => {
             const msgs = {
                 LIQUIDATED: [
-                    `i audit smart contracts for a living but my body just got LIQUIDATED 💀 grade ${data.grade}, ${data.exploits.length} exploits running. who's the vulnerability now`,
-                    `auditmybody.com found more exploits on me than i find in codebases 💀 grade ${data.grade}, degen score ${data.degenScore}%, ${data.grassDebt}min grass debt. i am the unaudited contract`,
-                    `spent ${data.onChain}h on-chain today, ${data.sleep}h sleeping. auditmybody.com said LIQUIDATED. my body has more critical findings than the last protocol i reviewed`,
+                    `grade ${data.grade}. LIQUIDATED 💀 ${data.exploits.length} exploits found.\n\nmy mass adoption strategy is apparently just sitting.\n\nbet you can't score lower 👇`,
+                    `auditmybody.com gave me grade ${data.grade}. LIQUIDATED.\n\ndegen score: ${data.degenScore}%\ngrass debt: ${data.grassDebt}min\n\nhonestly impressed with myself. try to beat this 👇`,
+                    `body audit: LIQUIDATED 💀 grade ${data.grade}\n\n${data.exploits.length} active exploits and 0 regrets.\nwell... maybe some regrets.\n\nwhat's your grade? 👇`,
                 ],
                 CRITICAL: [
-                    `i can spot a reentrancy bug in 10 seconds but apparently can't spot ${data.exploits.length} exploits running on my own body 🫠 grade ${data.grade}. auditmybody.com is ruthless`,
-                    `auditmybody.com gave me grade ${data.grade}. ${data.sleep}h sleep, ${data.caffeine || 3} coffees, ${data.sitting}h sitting. i write security reports all day and my body IS the security report`,
-                    `my body audit came back CRITICAL 🫠 degen score ${data.degenScore}%. "this is not a temporary bug, this is a lifestyle." i deploy fixes for protocols but can't fix myself`,
+                    `body audit: CRITICAL 🫠 grade ${data.grade}\n\ndegen score ${data.degenScore}%, ${data.grassDebt}min grass debt\n\nat this point i'm speedrunning health issues. what's your score? 👇`,
+                    `auditmybody.com says CRITICAL. grade ${data.grade}.\n\n${data.sleep}h sleep, ${data.caffeine || 3} coffees, ${data.sitting}h sitting.\nthis is fine. everything is fine.\n\npost yours 👇`,
+                    `grade ${data.grade}. protocol state: CRITICAL 🫠\n\nenergy at ${data.energy}%. ${data.exploits.length} exploits running.\ni'll fix it tomorrow (i won't).\n\nhow bad is yours? 👇`,
                 ],
                 DEGRADING: [
-                    `auditmybody.com says DEGRADING 📉 grade ${data.grade}. i mass-produce audits but my body is the one unaudited system in my life. ${data.grassDebt}min grass debt and counting`,
-                    `body audit: grade ${data.grade} 😅 ${data.sitting}h sitting, ${data.energy}% energy. i review code quality all day but my lifestyle quality is a Low severity at best`,
-                    `my body's running in DEGRADING state. grade ${data.grade}. sunlight oracle offline ${data.daysOut}d. i told a founder to "prioritize health" in my audit report last week. the irony`,
+                    `body audit: DEGRADING 📉 grade ${data.grade}\n\ngrass debt: ${data.grassDebt}min. sunlight oracle: offline ${data.daysOut}d.\nnot great, not terrible. could be worse.\n\nwhat did you get? 👇`,
+                    `auditmybody.com gave me grade ${data.grade}. DEGRADING.\n\n${data.energy}% energy, degen score ${data.degenScore}%\n\ni'm choosing to see this as room for improvement.\n\nyour turn 👇`,
+                    `grade ${data.grade}. body state: DEGRADING 📉\n\n${data.sitting}h sitting today. proof of walk: questionable.\nthe bar was low and i still tripped.\n\nbeat my score 👇`,
                 ],
                 OPTIMAL: [
-                    `body audit: OPTIMAL ✅ grade ${data.grade}, 0 exploits, proof of walk VERIFIED. i ship code, review code, AND touch grass. no known vulnerabilities on this protocol`,
-                    `auditmybody.com couldn't find a single exploit 💪 grade ${data.grade}, ${data.energy}% energy. i'm the only fully audited system in crypto rn`,
-                    `passed my body audit with grade ${data.grade} ✅ 0 exploits, degen score ${data.degenScore}%. proof that you can be deep in crypto and still have your health together. rare`,
+                    `body audit: OPTIMAL ✅ grade ${data.grade}\n\n0 exploits. proof of walk: VERIFIED.\nyes, we exist. no, i don't know how either.\n\nlet's see yours 👇`,
+                    `grade ${data.grade}. OPTIMAL ✅ ${data.energy}% energy, 0 exploits.\n\ntouch grass, ship code, repeat.\napparently it's that simple.\n\nprove me wrong 👇`,
+                    `auditmybody.com gave me grade ${data.grade}. OPTIMAL.\n\ndegen score: only ${data.degenScore}%.\nfinally something in crypto i didn't get rekt on.\n\nwhat's your grade? 👇`,
                 ],
             };
             const pool = msgs[data.pState] || msgs.DEGRADING;
