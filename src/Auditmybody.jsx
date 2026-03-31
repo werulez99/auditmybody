@@ -340,7 +340,7 @@ function Chips({ label, value, onChange, options }) {
 }
 
 /* ─── SHARE CARD ──────────────────────────────────────────────── */
-function ShareCard({ d, onCopy, copied, onGenerateBadge }) {
+function ShareCard({ d, onGenerateBadge, onShareX }) {
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
     const gradeCol = GRADE_COL[d.grade] || C.red;
     const quote = d.pState === "LIQUIDATED" ? "Protocol sunset imminent. You are the rug." :
@@ -373,20 +373,20 @@ function ShareCard({ d, onCopy, copied, onGenerateBadge }) {
                         </div>
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
-                        <button onClick={onCopy} style={{
-                            background: copied ? "rgba(74,222,128,0.15)" : "rgba(99,179,237,0.08)",
-                            border: `1px solid ${copied ? C.green + "66" : C.border}`,
-                            borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
-                            color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px",
-                            textTransform: "uppercase", transition: "all .2s"
-                        }}>{copied ? "✓ COPIED" : "📋 COPY"}</button>
                         <button onClick={onGenerateBadge} style={{
                             background: "linear-gradient(135deg, rgba(232,121,249,0.12) 0%, rgba(96,165,250,0.12) 100%)",
                             border: `1px solid ${C.purple}55`,
                             borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
                             color: C.purple, cursor: "pointer", letterSpacing: "1px",
                             textTransform: "uppercase", transition: "all .2s"
-                        }}>🎨 GENERATE BADGE</button>
+                        }}>🎨 BADGE</button>
+                        <button onClick={onShareX} style={{
+                            background: "rgba(99,179,237,0.08)",
+                            border: `1px solid ${C.border}`,
+                            borderRadius: 8, padding: "8px 16px", fontFamily: mono, fontSize: 15,
+                            color: C.text, cursor: "pointer", letterSpacing: "1px",
+                            textTransform: "uppercase", transition: "all .2s"
+                        }}>𝕏 SHARE ON X</button>
                     </div>
                 </div>
 
@@ -453,7 +453,7 @@ function ShareCard({ d, onCopy, copied, onGenerateBadge }) {
 }
 
 /* ─── RESULTS ─────────────────────────────────────────────────── */
-function Results({ d, onReset, onShare, copied, onGenerateBadge }) {
+function Results({ d, onReset, onShareX, onGenerateBadge }) {
     const [advOpen, setAdvOpen] = useState(false);
     const [simIdx, setSimIdx] = useState(null);
     const pCol = d.pState === "OPTIMAL" ? C.green : d.pState === "DEGRADING" ? C.amber : d.pState === "CRITICAL" ? C.red : C.purple;
@@ -484,8 +484,8 @@ function Results({ d, onReset, onShare, copied, onGenerateBadge }) {
                         </div>
                     ))}
                     <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
-                        <button onClick={onShare} style={{ background: copied ? "rgba(74,222,128,0.1)" : "transparent", border: `1px solid ${copied ? C.green + "66" : C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: copied ? C.green : C.muted, cursor: "pointer", letterSpacing: "1px" }}>{copied ? "✓ COPIED" : "SHARE"}</button>
-                        <button onClick={onGenerateBadge} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>GENERATE BADGE</button>
+                        <button onClick={onShareX} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.text, cursor: "pointer", letterSpacing: "1px" }}>𝕏 SHARE</button>
+                        <button onClick={onGenerateBadge} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>🎨 BADGE</button>
                         <button onClick={onReset} style={{ background: "transparent", border: `1px solid ${C.dim}`, borderRadius: 5, padding: "5px 12px", fontFamily: mono, fontSize: 14, color: C.muted, cursor: "pointer", letterSpacing: "1px" }}>RE-AUDIT</button>
                     </div>
                 </div>
@@ -697,7 +697,7 @@ function Results({ d, onReset, onShare, copied, onGenerateBadge }) {
             )}
 
             {/* ── SHARE CARD ── */}
-            <ShareCard d={d} onCopy={onShare} copied={copied} onGenerateBadge={onGenerateBadge} />
+            <ShareCard d={d} onGenerateBadge={onGenerateBadge} onShareX={onShareX} />
 
             {/* ── DIAGNOSTIC ── */}
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "20px", position: "relative", marginBottom: 12 }}>
@@ -812,7 +812,6 @@ export default function AuditMyBody() {
     const badgeCanvasRef = useRef(null);
     const [data, setData] = useState(null);
     const [lines, setLines] = useState([]);
-    const [copied, setCopied] = useState(false);
     const ivRef = useRef(null);
 
     const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -850,34 +849,31 @@ export default function AuditMyBody() {
         return () => clearInterval(ivRef.current);
     }, [view]);
 
-    function share() {
+    function shareOnX() {
         if (!data) return;
-        const text = [
-            "🔬 AUDIT MY BODY — AUDIT REPORT", "",
-            `Protocol Grade: ${data.grade} (${data.overallScore}pts)`,
-            `State: ${data.pState}`,
-            `Gas Level: ${data.energy}%`,
-            `Touch Grass Debt: ${data.grassDebt} min`,
-            `Liquidation Risk: ${data.liqRisk}%`,
-            `Active Exploits: ${data.exploits.length}`,
-            `Proof of Walk: ${data.pow.replace(/_/g, " ")}`,
-            `Sunlight Oracle: ${data.sunOracle}`,
-            `Social Layer: ${data.socialLayer.replace(/_/g, " ")}`,
-            `Grass Reserves: ${data.grassReserves}%`,
-            `Cope Index: ${data.copeIndex}%`,
-            `Degeneracy Score: ${data.degenScore}%`, "",
-            data.pState === "LIQUIDATED" ? '"Protocol sunset imminent. You are the rug."' :
-                data.pState === "CRITICAL" ? '"System degradation detected. This is not a temporary bug."' :
-                    data.pState === "DEGRADING" ? '"The market does not care about your feelings. Touch grass."' :
-                        '"Healthy validator. Rare W. Don\'t get complacent."', "",
-            "auditmybody.com · by @Merulez99 | @ValvesSec",
-            "No blockchain calls were made. Your mitochondria, however, are real.",
-        ].join("\n");
-        try {
-            if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => setCopied(true)).catch(() => fb(text));
-            else fb(text);
-        } catch (e) { fb(text); }
-        setTimeout(() => setCopied(false), 2500);
+        const funnyLines = {
+            LIQUIDATED: [
+                `Just got audited by @AuditMyBody_ and I'm officially LIQUIDATED 💀\n\nGrade: ${data.grade} · ${data.overallScore}pts\nTouch Grass Debt: ${data.grassDebt}min\nExploits running: ${data.exploits.length}\n\nI am the rug pull. My body is the rug.`,
+                `Protocol status: LIQUIDATED\nGrade: ${data.grade}\n\nMy body just got rugged harder than $LUNA.\n${data.exploits.length} active exploits. ${data.brokenInvs}/6 invariants broken.\nProof of Walk: ${data.pow.replace(/_/g, " ")}\n\nI need to touch grass immediately.`,
+                `🚨 CRITICAL AUDIT ALERT 🚨\n\nGrade: ${data.grade} · Energy: ${data.energy}%\nDegen Score: ${data.degenScore}%\nSunlight Oracle: ${data.sunOracle}\n\nMy mitochondria have filed for bankruptcy.`,
+            ],
+            CRITICAL: [
+                `Audited my body. It's in CRITICAL state 🫠\n\nGrade: ${data.grade} · ${data.overallScore}pts\nLiq Risk: ${data.liqRisk}%\nGrass Debt: ${data.grassDebt}min\n\nThis is not a temporary bug. This is a lifestyle.`,
+                `My body's protocol state: CRITICAL\nGrade: ${data.grade}\n\n${data.exploits.length} exploits running on my health\nCortisol at ${data.cortisol}%\nProof of Walk: NOT SUBMITTED\n\nWho needs sunlight when you have monitor glow`,
+            ],
+            DEGRADING: [
+                `Body audit results: DEGRADING 📉\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nGrass Debt: ${data.grassDebt}min\nCope Index: ${data.copeIndex}%\n\nThe market doesn't care about my feelings. Or my posture.`,
+                `Just ran @AuditMyBody_ and got Grade ${data.grade} 😅\n\nState: DEGRADING\nDegen Score: ${data.degenScore}%\nSocial Layer: ${data.socialLayer.replace(/_/g, " ")}\n\nAt least my code compiles. My body doesn't.`,
+            ],
+            OPTIMAL: [
+                `Body audit: OPTIMAL ✅\n\nGrade: ${data.grade} · ${data.overallScore}pts\nEnergy: ${data.energy}%\nGrass Debt: ${data.grassDebt}min\nProof of Walk: VERIFIED\n\nI touch grass AND ship code. Rare combo apparently.`,
+                `Just aced my @AuditMyBody_ audit 💪\n\nGrade: ${data.grade} · State: OPTIMAL\n0 active exploits\nSunlight Oracle: ONLINE\nDegen Score: ${data.degenScore}%\n\nNo bugs found in this body. Unlike my smart contracts.`,
+            ],
+        };
+        const lines = funnyLines[data.pState] || funnyLines.DEGRADING;
+        const msg = lines[Math.floor(Math.random() * lines.length)];
+        const text = msg + "\n\nAudit yours 👇\nhttps://auditmybody.com";
+        window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
     }
 
     function generateBadge() {
@@ -1195,15 +1191,6 @@ export default function AuditMyBody() {
         ctx.closePath();
     }
 
-    function fb(text) {
-        try {
-            const el = document.createElement("textarea"); el.value = text;
-            el.style.position = "fixed"; el.style.opacity = "0";
-            document.body.appendChild(el); el.select();
-            document.execCommand("copy"); document.body.removeChild(el);
-            setCopied(true);
-        } catch (e) { }
-    }
 
     const inputStatus = (k) => {
         const v = form[k];
@@ -1377,7 +1364,7 @@ export default function AuditMyBody() {
 
                 {/* ── RESULTS ── */}
                 {view === "results" && data && (
-                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShare={share} copied={copied} onGenerateBadge={generateBadge} />
+                    <Results d={data} onReset={() => { setView("input"); setData(null); }} onShareX={shareOnX} onGenerateBadge={generateBadge} />
                 )}
             </div>
         </div>
